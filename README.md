@@ -19,7 +19,7 @@ Moreover, we use 3 data augmentations for our data:
 `Mean Squared Error (MSE)` loss and `Adam` optimizer. We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are used to gauge the performance of the model on the `test_set` for height estimation. The `batch_size` used is 32.
 
 - **Model Architecture**: </br>
-<img src="/ISCAP_Height_Estimation/imgs/height_mse.png" width="300">
+<img src="ISCAP_Height_Estimation/imgs/height_mse.png" width="300">
 
 - **Results**: </br>
 
@@ -29,88 +29,8 @@ Moreover, we use 3 data augmentations for our data:
 |       | SingleTask            |                       |                                  | Female  | 6.50          | 5.22        |
  
 </br></br>
- 
- ## **Model_2**:
 
-- **Model**: `LSTM + Cross_Attention + MAE_Loss` | FBank Features | Height Estimation
-- **Model Description**: The model uses FBank features for only height estimation using standart `LSTM + Cross_Attnetion + Dense Layer` and is trained using a 
-`Mean Absilute Error (MAE)` loss and `Adam` optimizer. We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
-used to gauge the performance of the model on the `test_set` for height estimation. The `batch_size` used is 32.
-
-- **Model Architecture**: </br>
-<img src="/ISCAP_Height_Estimation/imgs/height_mae.png" width="300">
-
-- **Results**: </br>
-
-|S. No. | Model                 | Features              | Loss                             | Gender  | Height RMSE   | Height MAE  |
-| ----- | --------------------- | --------------------- | -------------------------------- | ------- | ------------- | ----------- |
-| 1.    | LSTM + Cross_att      | Filter Bank & Pitch   | Mean Absolute Error (MAE)        | Male    | 6.98          | 5.31        |
-|       | SingleTask            |                       |                                  | Female  | 6.43          | 5.07        |
-
-</br></br>
-
-## **Model_3**:
-
-- **Model**: `LSTM + Cross_Attention + MSE_Loss` | FBank Features | MultiTask Estimation (both age & height)
-- **Model Description**: The model uses FBank features for only height estimation using standart LSTM + Cross_Attnetion + Dense Layer and is trained using a 
-`Mean Squared Error (MSE)` loss and `Adam` optimizer for both age and height estimation with `height_loss` given twice the weight as comapred to `age_loss`. 
-We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
-used to gauge the performance of the model on the `test_set` for height estimation. The `batch_size` used is of 32 samples.
-
-- **Model Architecture**: </br>
-<img src="/ISCAP_Height_Estimation/imgs/height_age_mse.png" width="500">
-
-- **Results**: </br>
-
-|S. No. | Model                 | Features              | Loss                             | Gender  | Height RMSE   | Height MAE  |
-| ----- | --------------------- | --------------------- | -------------------------------- | ------- | ------------- | ----------- |
-| 1.    | LSTM + Cross_att      | Filter Bank & Pitch   | Mean Squared Error (MSE)         | Male    | 6.95          | 5.26        |
-|       | MultiTask             |                       |                                  | Female  | 6.44          | 5.15        |
-
-</br></br>
-
-## **Model_4**:
-
-- **Model**: `LSTM + Cross_Attention + MAE_Loss` | FBank Features | MultiTask Estimation (both age & height)
-- **Model Description**: The model uses FBank features for only height estimation using standart LSTM + Cross_Attnetion + Dense Layer and is trained using a 
-`Mean Absolute Error (MAE)` loss and `Adam` optimizer for both age and height estimation with `height_loss` given twice the weight as comapred to `age_loss`. 
-We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
-used to gauge the performance of the model on the test_set for height estimation. The `batch_size` used is of 32 samples.
-
-- **Model Architecture**: </br>
-<img src="/ISCAP_Height_Estimation/imgs/height_age_mae.png" width="500">
-
-- **Results**: </br>
-
-|S. No. | Model                 | Features              | Loss                             | Gender  | Height RMSE   | Height MAE  |
-| ----- | --------------------- | --------------------- | -------------------------------- | ------- | ------------- | ----------- |
-| 1.    | LSTM + Cross_att      | Filter Bank & Pitch   | Mean Absolute Error (MAE)        | Male    | 7.14          | 5.54        |
-|       | MultiTask             |                       |                                  | Female  | 6.48          | 4.95        |
-
-</br></br>
-
-## **Model_5**:
-
-- **Model**: `LSTM + Cross_Attention + Triplet & MSE_Loss` | FBank Features | Height Estimation
-- **Model Description**: The model uses FBank features for only height estimation using standart LSTM + Cross_Attnetion + Dense Layer and is trained using a 
-`Mean Squared Error (MAE)` loss combined with a `Triplet Loss`, used to train the `embeddings` obtained right after the `cross_attention layer`. `Triplet loss` is given one-third the 
-weighatge in total loss while `MSE` is given two-thirds. `Adam` is used the optimizer. The height labels are quantized and classified into groups of 5cms for Triplet Loss (i.e. height labels from 140-145cm in class_0, 145-150cm in class_1 and so on, giving us a total of 13 classes). 
-We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
-used to gauge the performance of the model on the test_set for height estimation. The `batch_size` used is of 32 samples.
-
-- **Model Architecture**: </br>
-<img src="/ISCAP_Height_Estimation/imgs/height_triplet.png" width="400">
-
-- **Results**: </br>
-
-|S. No. | Model                 | Features              | Loss                             | Gender  | Height RMSE   | Height MAE  |
-| ----- | --------------------- | --------------------- | -------------------------------- | ------- | ------------- | ----------- |
-| 1.    | LSTM + Cross_att      | Filter Bank & Pitch   | MSE + Triplet Loss               | Male    | 6.92          | 5.26        |
-|       | SingleTask            |                       |                                  | Female  | 6.24          | 4.95        |
-
-</br></br>
-
-## **Model_6**:
+## **Model_2**:
 
 - **Model**: `LSTM + Cross_Attention + Center & MSE_Loss` | FBank Features | Height Estimation
 - **Model Description**: The model uses FBank features for only height estimation using standart LSTM + Cross_Attnetion + Dense Layer and is trained using a 
@@ -131,28 +51,74 @@ used to gauge the performance of the model on the test_set for height estimation
 
 </br></br>
 
-# How to reproduce the models?
+## **Model_3**:
 
-## Requirements:
+- **Model**: `LSTM + Cross_Attention + Triplet & MSE_Loss` | FBank Features | Height Estimation
+- **Model Description**: The model uses FBank features for only height estimation using standart LSTM + Cross_Attnetion + Dense Layer and is trained using a 
+`Mean Squared Error (MAE)` loss combined with a `Triplet Loss`, used to train the `embeddings` obtained right after the `cross_attention layer`. `Triplet loss` is given one-third the 
+weighatge in total loss while `MSE` is given two-thirds. `Adam` is used the optimizer. The height labels are quantized and classified into groups of 5cms for Triplet Loss (i.e. height labels from 140-145cm in class_0, 145-150cm in class_1 and so on, giving us a total of 13 classes). 
+We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
+used to gauge the performance of the model on the test_set for height estimation. The `batch_size` used is of 32 samples.
 
-```
-- numpy
-- pandas
-- torch
-- pytorch_lightning
-- torchmetrics
-```
+- **Model Architecture**: </br>
+<img src="/ISCAP_Height_Estimation/imgs/height_triplet.png" width="400">
 
-## 3 Steps to run the model:
+- **Results**: </br>
 
-1. Clone or download this repository into your system.
+|S. No. | Model                 | Features              | Loss                             | Gender  | Height RMSE   | Height MAE  |
+| ----- | --------------------- | --------------------- | -------------------------------- | ------- | ------------- | ----------- |
+| 1.    | LSTM + Cross_att      | Filter Bank & Pitch   | MSE + Triplet Loss               | Male    | 6.92          | 5.26        |
+|       | SingleTask            |                       |                                  | Female  | 6.24          | 4.95        |
 
-2. Change your current working directory to `Height_Estimation_TIMIT`. 
+</br></br>
 
-3. Run the model_run file which you wish to reproduce. For example: </br>
-```
-$ python height_triplet_mse_run.py
-```
+## **Model_4**:
+
+- **Model**: `LSTM + Cross_Attention + MSE_Loss` | FBank Features | MultiTask Estimation (both age & height)
+- **Model Description**: The model uses FBank features for only height estimation using standart LSTM + Cross_Attnetion + Dense Layer and is trained using a 
+`Mean Squared Error (MSE)` loss and `Adam` optimizer for both age and height estimation with `height_loss` given twice the weight as comapred to `age_loss`. 
+We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
+used to gauge the performance of the model on the `test_set` for height estimation. The `batch_size` used is of 32 samples.
+
+- **Model Architecture**: </br>
+<img src="/ISCAP_Height_Estimation/imgs/height_age_mse.png" width="500">
+
+- **Results**: </br>
+
+|S. No. | Model                 | Features              | Loss                             | Gender  | Height RMSE   | Height MAE  |
+| ----- | --------------------- | --------------------- | -------------------------------- | ------- | ------------- | ----------- |
+| 1.    | LSTM + Cross_att      | Filter Bank & Pitch   | Mean Squared Error (MSE)         | Male    | 6.95          | 5.26        |
+|       | MultiTask             |                       |                                  | Female  | 6.44          | 5.15        |
+
+</br></br>
+
+
+# Installation: Setting up environment
+1) git clone https://github.com/kaldi-asr/kaldi.git kaldi --origin upstream
+2) git clone -b v.0.9.7 https://github.com/espnet/espnet.git
+3) cd tools/
+4) ln -s {kaldi_root}
+5) ./setup_anaconda.sh anaconda espnet 3.7.9
+6) make TH_VERSION=1.7.1 CUDA_VERSION=10.2
+7) . ./activate_python.sh; python3 check_install.py
+8) conda install pytorch==1.8.0 torchvision==0.9.0 torchaudio==0.8.0 cudatoolkit=10.2 -c pytorch
+9) conda install kaldiio
+
+# Download the project
+1) git clone https://github.com/TonnyTran/ISCAP_Height_Estimation.git
+2) ln -s {kaldi_root}/egs/wsj/s5/utils
+e.g. ln -s /home3/theanhtran/kaldi/egs/wsj/s5/utils
+3) ln -s {kaldi_root}/egs/wsj/s5/steps
+e.g. ln -s /home3/theanhtran/kaldi/egs/wsj/s5/steps 
+
+## How to run the model:
+
+1. Data preparation step:
+./prepare_TIMIT_data.sh
+
+2. Choose and run the program:
+./run_height_estimation.sh
+In the  `run_height_estimation.sh` file, we can select which model is trained by changing  `program` variation
 
 ## Other instructions:
 

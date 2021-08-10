@@ -110,7 +110,7 @@ class Test_Dataset_height_triplet_mse(Dataset):
     def __getitem__(self, idx):
         
         data = self.dic[self.dic_keys[idx]]
-        label = get_speakerID(dic_keys[idx])
+        label = get_speakerID(self.dic_keys[idx])
         
         if data.shape[0] < 800:
             data = np.concatenate([data, np.array([[0]*83]*(800-data.shape[0]))])              

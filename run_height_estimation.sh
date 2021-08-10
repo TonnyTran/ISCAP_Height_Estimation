@@ -8,9 +8,7 @@
 
 cuda_cmd_all="/home/tungtest/slurm.pl --gpu 1 --nodelist=node07"
 # cmd="run.pl"
-# We can control the program flow by changing start and stop stage
-program=4                 # start stage
-# print(cuda_cmd_all)
+program=4                 # Choose program that you want to run {1, 2, 3 , 4}
 
 #### Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | Height Estimation
 if [ ${program} -eq 1 ]; then

@@ -81,12 +81,15 @@ Moreover, we use 3 data augmentations for our data:
 
 **Results**: </br>
 
-|S. No. | Model                  | Features              | Loss                         | Height MAE All  | Height MAE Male | Height MAE Female |
-| ----- | ---------------------- | --------------------- | -----------------------------| --------------- | --------------- | ----------------- |
-| 1.    | LSTM + Cross_attn      | Filter Bank & Pitch   | Mean Squared Error (MSE)     |                 | 6.98            | 5.30              |
-| 2.    | LSTM + Cross_attn      | Filter Bank & Pitch   | MSE + Center Loss            |                 | 6.98            | 5.30              |
-| 3.    | LSTM + Cross_attn      | Filter Bank & Pitch   | MSE + Triplet Loss	        |                 | 6.98            | 5.30              |
-| 4.    | LSTM + Cross_attn      | Filter Bank & Pitch   | MSE Age + Height             |                 | 6.98            | 5.30              |
+|S. No. | Model                 | Loss                         | Height MAE All  | Height MAE Male | Height MAE Female |
+| ----- | --------------------- | -----------------------------| --------------- | --------------- | ----------------- |
+| 1.    | LSTM + Cross_att      | Mean Squared Error (MSE)     |5.38             | 5.46            | 5.22              |
+| 2.    | LSTM + Cross_att      | MSE + Center Loss            |5.25             | 5.26            | 5.23              |
+| 3.    | LSTM + Cross_att      | MSE + Triplet Loss	       |**5.23**             | 5.08            | 5.31              |
+| 4.    | LSTM + Cross_att      | MSE Age + Height             |5.36             | 5.40            | 5.26              |
+| Shareef (2020)| Comb3 (Fstats + formant + harmonic features (amplitude + frequency locations)) |  |  | 5.2             | 4.8               |
+| Singh (2016)| Random Forest   |                              |                 | 5.0             | 5.0               |
+
 
  
 </br></br>
@@ -100,8 +103,6 @@ Moreover, we use 3 data augmentations for our data:
 - **Model Architecture**: </br>
 <img src="ISCAP_Height_Estimation/imgs/height_mse.png" width="300">
 
-
-
 ## **Model_2**:
 
 - **Model**: `LSTM + Cross_Attention + Center & MSE_Loss` | FBank Features | Height Estimation
@@ -113,13 +114,6 @@ used to gauge the performance of the model on the test_set for height estimation
 
 - **Model Architecture**: </br>
 <img src="Height_Estimation_TIMIT/imgs/height_center.png" width="400">
-
-- **Results**: </br>
-
-|S. No. | Model                 | Features              | Loss                             | Gender  | Height RMSE   | Height MAE  |
-| ----- | --------------------- | --------------------- | -------------------------------- | ------- | ------------- | ----------- |
-| 1.    | LSTM + Cross_att      | Filter Bank & Pitch   | MSE + Center Loss                | Male    | 6.96          | 5.27        |
-|       | SingleTask            |                       |                                  | Female  | 6.47          | 5.18        |
 
 </br></br>
 
@@ -135,13 +129,6 @@ used to gauge the performance of the model on the test_set for height estimation
 - **Model Architecture**: </br>
 <img src="/ISCAP_Height_Estimation/imgs/height_triplet.png" width="400">
 
-- **Results**: </br>
-
-|S. No. | Model                 | Features              | Loss                             | Gender  | Height RMSE   | Height MAE  |
-| ----- | --------------------- | --------------------- | -------------------------------- | ------- | ------------- | ----------- |
-| 1.    | LSTM + Cross_att      | Filter Bank & Pitch   | MSE + Triplet Loss               | Male    | 6.92          | 5.26        |
-|       | SingleTask            |                       |                                  | Female  | 6.24          | 4.95        |
-
 </br></br>
 
 ## **Model_4**:
@@ -154,12 +141,5 @@ used to gauge the performance of the model on the `test_set` for height estimati
 
 - **Model Architecture**: </br>
 <img src="/ISCAP_Height_Estimation/imgs/height_age_mse.png" width="500">
-
-- **Results**: </br>
-
-|S. No. | Model                 | Features              | Loss                             | Gender  | Height RMSE   | Height MAE  |
-| ----- | --------------------- | --------------------- | -------------------------------- | ------- | ------------- | ----------- |
-| 1.    | LSTM + Cross_att      | Filter Bank & Pitch   | Mean Squared Error (MSE)         | Male    | 6.95          | 5.26        |
-|       | MultiTask             |                       |                                  | Female  | 6.44          | 5.15        |
 
 </br></br>

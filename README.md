@@ -56,26 +56,39 @@ bash run_height_estimation.sh program     # $program in {1, 2, 3, 4} indicates w
 
 3. Test the trained model
 ```bash
-bash test_height_model.sh
+bash test_height_model.sh program     # $program in {1, 2, 3, 4} 
 ```
 In the  `test_height_model.sh` file, we can select which model is trained by changing  `program` parameter.
+
 ## Other instructions:
 
 - You may change the hyper-parameters such as the `batch_size`, `max_epochs`, `early_stopping_patience`, `learning_rate`, `num_layers`, `loss_criterion`, etc. in the run.py file of any model.
 - Please note that the if you are not using a GPU for processing, change the hyper-parameter of `gpu` in the `trainer` function (in the run.py files) to `0`.
 
-# Models:
+# Models & Results:
 
-This document is to compile the summary of all the models for height and age estimation using TIMIT dataset. </br>
-We predominantly use two kinds of features for these models:
+This document is to compile the summary of all the models for height estimation using TIMIT dataset. </br>
+We predominantly use below feature extraction for these models:
 - **Filter Bank**: 80 FBank + 3 Pitch + 1 Binary_Gender (Features_Dimension: 83)
-- **Wav2Vec2**: Features extracted from pre-trained Wav2Vec2 model (Features_Dimension: 768)
+<!-- - **Wav2Vec2**: Features extracted from pre-trained Wav2Vec2 model (Features_Dimension: 768) -->
 
 Moreover, we use 3 data augmentations for our data:
 - **CMVN**: Cepstral mean and variance normalization for FBank features
 - **Speed Perturbation**: Triple the training data using 0.9x and 1.1x speed perturbed data.
 - **Spectral Augmentation**: SpecAugment to randomly mask 15%-25% for better generalization and robustness.
 
+</br></br>
+
+**Results**: </br>
+
+|S. No. | Model                  | Features              | Loss                         | Height MAE All  | Height MAE Male | Height MAE Female |
+| ----- | ---------------------- | --------------------- | -----------------------------| --------------- | --------------- | ----------------- |
+| 1.    | LSTM + Cross_attn      | Filter Bank & Pitch   | Mean Squared Error (MSE)     |                 | 6.98            | 5.30              |
+| 2.    | LSTM + Cross_attn      | Filter Bank & Pitch   | MSE + Center Loss            |                 | 6.98            | 5.30              |
+| 3.    | LSTM + Cross_attn      | Filter Bank & Pitch   | MSE + Triplet Loss	        |                 | 6.98            | 5.30              |
+| 4.    | LSTM + Cross_attn      | Filter Bank & Pitch   | MSE Age + Height             |                 | 6.98            | 5.30              |
+
+ 
 </br></br>
 
 ## **Model_1**:
@@ -87,14 +100,7 @@ Moreover, we use 3 data augmentations for our data:
 - **Model Architecture**: </br>
 <img src="ISCAP_Height_Estimation/imgs/height_mse.png" width="300">
 
-- **Results**: </br>
 
-|S. No. | Model                 | Features              | Loss                             | Gender  | Height RMSE   | Height MAE  |
-| ----- | --------------------- | --------------------- | -------------------------------- | ------- | ------------- | ----------- |
-| 1.    | LSTM + Cross_att      | Filter Bank & Pitch   | Mean Squared Error (MSE)         | Male    | 6.98          | 5.30        |
-|       | SingleTask            |                       |                                  | Female  | 6.50          | 5.22        |
- 
-</br></br>
 
 ## **Model_2**:
 

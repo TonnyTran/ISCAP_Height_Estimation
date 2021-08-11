@@ -19,7 +19,7 @@ class lstm_center_mse(pl.LightningModule):
                  output_size,
                  learning_rate,
                  criterion_ht, criterion_center,
-                 mse_female, mae_female, mse_male, mae_male,
+                 mse_female, mae_female, mse_male, mae_male, mse_all, mae_all,
                  seq_len = 800,
                  n_features = 84):
         super(lstm_center_mse, self).__init__()
@@ -36,6 +36,8 @@ class lstm_center_mse(pl.LightningModule):
         self.mae_female = mae_female
         self.mse_male = mse_male
         self.mae_male = mae_male
+        self.mse_all = mse_all
+        self.mae_all = mae_all
 
         self.lstm = nn.LSTM(input_size=n_features, 
                             hidden_size=hidden_size,
@@ -107,6 +109,9 @@ class lstm_center_mse(pl.LightningModule):
             if gender[i].item() == 0:
                 mse_error_m = self.mse_male(torch.squeeze(ht_hat[i]), target[i])
                 mae_error_m = self.mae_male(torch.squeeze(ht_hat[i]), target[i])
+            
+            mse_error_all = self.mse_all(torch.squeeze(ht_hat[i]), target[i])
+            mae_error_all = self.mae_all(torch.squeeze(ht_hat[i]), target[i])
                 
         #result = pl.EvalResult()
         self.log('test_loss', loss_ht)

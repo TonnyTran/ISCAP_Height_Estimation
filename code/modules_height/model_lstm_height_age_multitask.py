@@ -19,7 +19,7 @@ class lstm_height_age_multitask(pl.LightningModule):
                  output_size,
                  learning_rate,
                  criterion, 
-                 mse_female, mae_female, mse_male, mae_male,
+                 mse_female, mae_female, mse_male, mae_male, mse_all, mae_all,
                  seq_len = 800,
                  n_features = 83):
         super(lstm_height_age_multitask, self).__init__()
@@ -35,6 +35,8 @@ class lstm_height_age_multitask(pl.LightningModule):
         self.mae_female = mae_female
         self.mse_male = mse_male
         self.mae_male = mae_male
+        self.mse_all = mse_all
+        self.mae_all = mae_all
 
         self.lstm = nn.LSTM(input_size=n_features, 
                             hidden_size=hidden_size,
@@ -110,6 +112,9 @@ class lstm_height_age_multitask(pl.LightningModule):
             if gender[i].item() == 0:
                 mse_error_m = self.mse_male(torch.squeeze(ht_hat[i]), y_ht[i])
                 mae_error_m = self.mae_male(torch.squeeze(ht_hat[i]), y_ht[i])
+
+            mse_error_all = self.mse_all(torch.squeeze(ht_hat[i]), y_ht[i])
+            mae_error_all = self.mae_all(torch.squeeze(ht_hat[i]), y_ht[i])
                 
         #result = pl.EvalResult()
         self.log('test_loss', loss)

@@ -6,9 +6,16 @@
 . ./path.sh || exit 1;
 . ./cmd.sh || exit 1;
 
-cuda_cmd_all="/home/tungtest/slurm.pl --gpu 1 --nodelist=node07"
+# cuda_cmd_all="/home/tungtest/slurm.pl --gpu 1 --nodelist=node07"
 # cmd="run.pl"
-program=4                 # Choose program that you want to run {1, 2, 3 , 4}
+# We can control the program flow by changing start and stop stage
+program=$1
+
+if [ $1 =='' ]; then
+    echo 'Warning: Please input the program that you want to run which is in {1, 2, 3, 4}.'
+    echo 'E.g. bash run_height_estimation.sh 1 => run program 1'
+    exit 1
+fi
 
 #### Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | Height Estimation
 if [ ${program} -eq 1 ]; then

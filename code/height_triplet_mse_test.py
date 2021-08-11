@@ -19,7 +19,7 @@ if __name__ == '__main__':
     device = pytorch_env()
 
     ##### Change to the location that the trained model is stored
-    checkpoint_path="exp/height_triplet_mse/4/checkpoints/epoch=16-step=7003.ckpt"
+    checkpoint_path="best_model/height_triplet_mse/height_triplet_mse_best_model.ckpt"
 
     ########### Tracking Test MSE & MAE ###########################################################################
     mse_male = MeanSquaredError().to(device)

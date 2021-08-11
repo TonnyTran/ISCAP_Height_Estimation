@@ -1,3 +1,70 @@
+# ISCAP - Identifying Speaker Characteristics through Audio Profiling - HEIGHT ESTIMATION
+## Introduction
+
+## Installation:
+### Setting up environment
+1) Install Kaldi
+```bash
+git clone -b 5.4 https://github.com/kaldi-asr/kaldi.git kaldi
+cd kaldi/tools/; make; cd ../src; ./configure; make
+```
+2) Install EspNet
+```bash
+git clone -b v.0.9.7 https://github.com/espnet/espnet.git
+cd espnet/tools/        # change to tools folder
+ln -s {kaldi_root}      # Create link to Kaldi. e.g. ln -s home/theanhtran/kaldi/
+```
+3) Set up Conda environment
+```bash
+./setup_anaconda.sh anaconda espnet 3.7.9   # Create a anaconda environmetn - espnet with Python 3.7.9
+make TH_VERSION=1.8.0 CUDA_VERSION=10.2     # Install Pytorch and CUDA
+. ./activate_python.sh; python3 check_install.py  # Check the installation
+conda install torchvision==0.9.0 torchaudio==0.8.0 -c pytorch
+```
+<!-- conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 cudatoolkit=10.2 -c pytorch -->
+4) Install Pytorch Lightning
+```bash
+conda install pytorch-lightning -c conda-forge
+```
+### Download the project
+1) Clone the project from GitHub into your workspace
+```bash
+git clone https://github.com/TonnyTran/ISCAP_Height_Estimation.git
+cd ISCAP_Height_Estimation
+ln -s {kaldi_root}/egs/wsj/s5/utils     # e.g. ln -s /home/theanhtran/kaldi/egs/wsj/s5/utils
+ln -s {kaldi_root}/egs/wsj/s5/steps     # e.g. ln -s /home/theanhtran/kaldi/egs/wsj/s5/steps 
+```
+2) Point to your espnet
+
+Open `ISCAP_Height_Estimation/path.sh` file, change $MAIN_ROOT$ to your espnet directory, e.g. `MAIN_ROOT=/home/theanhtran/espnet`
+
+## How to run Height Estimation systems
+1. Data preparation step
+```bash
+bash prepare_TIMIT_data.sh
+```
+This step will download .zip file of TIMIT dataset => extract and then generate features using Kaldi format
+
+2. Run the program
+```bash
+bash run_height_estimation.sh
+```
+In the  `run_height_estimation.sh` file, we can select which model is trained by changing  `program` parameter.
+- program=1     =>    Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | Height Estimation
+- program=2     =>    Model 2: LSTM + Cross_Attention + Center & MSE_Loss | FBank Features | Height Estimation
+- program=3     =>    Model 3: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation
+- program=4     =>    Model 4: LSTM + Cross_Attention + MAE_Loss | FBank Features | MultiTask Estimation (both age & height)
+
+3. Test the trained model
+```bash
+bash test_height_model.sh
+```
+In the  `test_height_model.sh` file, we can select which model is trained by changing  `program` parameter.
+## Other instructions:
+
+- You may change the hyper-parameters such as the `batch_size`, `max_epochs`, `early_stopping_patience`, `learning_rate`, `num_layers`, `loss_criterion`, etc. in the run.py file of any model.
+- Please note that the if you are not using a GPU for processing, change the hyper-parameter of `gpu` in the `trainer` function (in the run.py files) to `0`.
+
 # Models:
 
 This document is to compile the summary of all the models for height and age estimation using TIMIT dataset. </br>
@@ -40,7 +107,7 @@ We use a patience of 10 epochs before early stopping the model based on Validati
 used to gauge the performance of the model on the test_set for height estimation. The `batch_size` used is of 32 samples.
 
 - **Model Architecture**: </br>
-<img src="/Height_Estimation_TIMIT/imgs/height_center.png" width="400">
+<img src="Height_Estimation_TIMIT/imgs/height_center.png" width="400">
 
 - **Results**: </br>
 
@@ -91,36 +158,3 @@ used to gauge the performance of the model on the `test_set` for height estimati
 |       | MultiTask             |                       |                                  | Female  | 6.44          | 5.15        |
 
 </br></br>
-
-
-# Installation: Setting up environment
-1) git clone https://github.com/kaldi-asr/kaldi.git kaldi --origin upstream
-2) git clone -b v.0.9.7 https://github.com/espnet/espnet.git
-3) cd tools/
-4) ln -s {kaldi_root}
-5) ./setup_anaconda.sh anaconda espnet 3.7.9
-6) make TH_VERSION=1.7.1 CUDA_VERSION=10.2
-7) . ./activate_python.sh; python3 check_install.py
-8) conda install pytorch==1.8.0 torchvision==0.9.0 torchaudio==0.8.0 cudatoolkit=10.2 -c pytorch
-9) conda install kaldiio
-
-# Download the project
-1) git clone https://github.com/TonnyTran/ISCAP_Height_Estimation.git
-2) ln -s {kaldi_root}/egs/wsj/s5/utils
-e.g. ln -s /home3/theanhtran/kaldi/egs/wsj/s5/utils
-3) ln -s {kaldi_root}/egs/wsj/s5/steps
-e.g. ln -s /home3/theanhtran/kaldi/egs/wsj/s5/steps 
-
-## How to run the model:
-
-1. Data preparation step:
-./prepare_TIMIT_data.sh
-
-2. Choose and run the program:
-./run_height_estimation.sh
-In the  `run_height_estimation.sh` file, we can select which model is trained by changing  `program` variation
-
-## Other instructions:
-
-- You may change the hyper-parameters such as the `batch_size`, `max_epochs`, `early_stopping_patience`, `learning_rate`, `num_layers`, `loss_criterion`, etc. in the run.py file of any model.
-- Please note that the if you are not using a GPU for processing, change the hyper-parameter of `gpu` in the `trainer` function (in the run.py files) to `0`.

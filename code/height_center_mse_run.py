@@ -43,7 +43,7 @@ if __name__ == '__main__':
     ################################################################################################################
 
     # Seeding Everything for Reproducibilty of Results
-    seed_everything(11, workers=True)
+    # seed_everything(11, workers=True)
     csv_logger = CSVLogger('exp/', name='height_center_mse', version='0') # Creates a CSV in the folder which contains all the logs (Training + Testing + Validation)
 
     trainer = Trainer(

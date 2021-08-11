@@ -41,7 +41,7 @@ if __name__ == '__main__':
     ################################################################################################################
 
     # Seeding Everything for Reproducibilty of Results
-    seed_everything(5, workers=True)
+    # seed_everything(5, workers=True)
     csv_logger = CSVLogger('exp/', name='height_age_multitask', version='0') # Creates a CSV in the folder which contains all the logs (Training + Testing + Validation)
 
     trainer = Trainer(

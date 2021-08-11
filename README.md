@@ -47,9 +47,8 @@ This step will download .zip file of TIMIT dataset => extract and then generate 
 
 2. Run the program
 ```bash
-bash run_height_estimation.sh
+bash run_height_estimation.sh program     # $program in {1, 2, 3, 4} indicates which program you want to run   
 ```
-In the  `run_height_estimation.sh` file, we can select which model is trained by changing  `program` parameter.
 - program=1     =>    Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | Height Estimation
 - program=2     =>    Model 2: LSTM + Cross_Attention + Center & MSE_Loss | FBank Features | Height Estimation
 - program=3     =>    Model 3: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation

@@ -58,7 +58,7 @@ bash run_height_estimation.sh program     # $program in {1, 2, 3, 4} indicates w
 ```bash
 bash test_height_model.sh program     # $program in {1, 2, 3, 4} 
 ```
-In the  `test_height_model.sh` file, we can select which model is trained by changing  `program` parameter.
+We can control the test program by input program number in {1, 2, 3, 4}.
 
 ## Other instructions:
 

@@ -97,28 +97,15 @@ Moreover, we use 3 data augmentations for our data:
 
 ## **Model_1**:
 
-- **Model**: `LSTM + Cross_Attention + MSE_Loss` | FBank Features | Height Estimation
-- **Model Description**: The model uses FBank features for only height estimation using standart `LSTM + Cross_Attnetion + Dense Layer` and is trained using a 
-`Mean Squared Error (MSE)` loss and `Adam` optimizer. We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are used to gauge the performance of the model on the `test_set` for height estimation. The `batch_size` used is 32.
-
+- **Model**: `LSTM + Cross_Attention + MSE_Loss` | FBank Features | MultiTask Estimation (both age & height)
+- **Model Description**: The model uses FBank features for only height estimation using standart LSTM + Cross_Attnetion + Dense Layer and is trained using a 
+`Mean Squared Error (MSE)` loss and `Adam` optimizer for both age and height estimation with `height_loss` given twice the weight as comapred to `age_loss`. 
+We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
+used to gauge the performance of the model on the `test_set` for height estimation. The `batch_size` used is of 32 samples.
 - **Model Architecture**: </br>
-<img src="ISCAP_Height_Estimation/imgs/height_mse.png" width="300">
+<img src="/imgs/height_triplet.png" width="400">
 
 ## **Model_2**:
-
-- **Model**: `LSTM + Cross_Attention + Center & MSE_Loss` | FBank Features | Height Estimation
-- **Model Description**: The model uses FBank features for only height estimation using standart LSTM + Cross_Attnetion + Dense Layer and is trained using a 
-`Mean Squared Error (MAE)` loss combined with a `Center Loss`, used to train the `embeddings` obtained right after the `cross_attention layer`. `Center loss` is given one-third the 
-weighatge in total loss while `MSE` is given two-thirds. `Adam` is used the optimizer. The height labels are quantized and classified into groups of 5cms for Center Loss (i.e. height labels from 140-145cm in `class_0`, 145-150cm in `class_1` and so on, giving us a total of 13 classes). 
-We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
-used to gauge the performance of the model on the test_set for height estimation. The `batch_size` used is of 32 samples.
-
-- **Model Architecture**: </br>
-<img src="Height_Estimation_TIMIT/imgs/height_center.png" width="400">
-
-</br></br>
-
-## **Model_3**:
 
 - **Model**: `LSTM + Cross_Attention + Triplet & MSE_Loss` | FBank Features | Height Estimation
 - **Model Description**: The model uses FBank features for only height estimation using standart LSTM + Cross_Attnetion + Dense Layer and is trained using a 
@@ -128,19 +115,5 @@ We use a patience of 10 epochs before early stopping the model based on Validati
 used to gauge the performance of the model on the test_set for height estimation. The `batch_size` used is of 32 samples.
 
 - **Model Architecture**: </br>
-<img src="/ISCAP_Height_Estimation/imgs/height_triplet.png" width="400">
-
-</br></br>
-
-## **Model_4**:
-
-- **Model**: `LSTM + Cross_Attention + MSE_Loss` | FBank Features | MultiTask Estimation (both age & height)
-- **Model Description**: The model uses FBank features for only height estimation using standart LSTM + Cross_Attnetion + Dense Layer and is trained using a 
-`Mean Squared Error (MSE)` loss and `Adam` optimizer for both age and height estimation with `height_loss` given twice the weight as comapred to `age_loss`. 
-We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
-used to gauge the performance of the model on the `test_set` for height estimation. The `batch_size` used is of 32 samples.
-
-- **Model Architecture**: </br>
-<img src="/ISCAP_Height_Estimation/imgs/height_age_mse.png" width="500">
-
+<img src="/imgs/height_triplet.png" width="400">
 </br></br>

@@ -8,35 +8,21 @@
 
 #!/bin/bash
 . ./path.sh || exit 1;
-. ./cmd.sh || exit 1;
 
-# cuda_cmd_all="/home/tungtest/slurm.pl --gpu 1 --nodelist=node07"
-# cmd="run.pl"
-# We can control the program flow by changing start and stop stage
-program=$1
+program=$1                 # Choose program that you want to run {1, 2}
 
 if [ $1 =='' ]; then
-    echo 'Warning: Please input the program that you want to run which is in {1, 2, 3, 4}.'
+    echo 'Warning: Please input the program that you want to run which is in {1, 2}.'
     echo 'E.g. bash run_height_estimation.sh 1 => run program 1'
     exit 1
 fi
 
-#### Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | Height Estimation
+#### Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | MultiTask Estimation (both age & height)
 if [ ${program} -eq 1 ]; then
-    python code/height_crossattn_run.py
+    python code/height_age_multitask_run.py     # we can change the nb of GPU using for training by modifying line 55 in code/height_age_multitask_run.py
 fi
 
-#### Model 2: LSTM + Cross_Attention + Center & MSE_Loss | FBank Features | Height Estimation
+#### Model 2: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation
 if [ ${program} -eq 2 ]; then
-    python code/height_center_mse_run.py
-fi
-
-#### Model 3: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation
-if [ ${program} -eq 3 ]; then
-    python code/height_triplet_mse_run.py
-fi
-
-#### Model 4: LSTM + Cross_Attention + MAE_Loss | FBank Features | MultiTask Estimation (both age & height)
-if [ ${program} -eq 4 ]; then
-    python code/height_age_multitask_run.py
+    python code/height_triplet_mse_run.py       # we can change the nb of GPU using for training by modifying line 55 in code/height_triplet_mse_run.py
 fi

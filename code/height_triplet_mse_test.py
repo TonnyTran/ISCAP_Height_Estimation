@@ -13,7 +13,7 @@ from modules_height.model_lstm_triplet_mse import lstm_triplet_mse
 
 
 if __name__ == '__main__':   
-    print(">>>>>> Model 3: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation <<<<<<")
+    print(">>>>>> Model 2: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation <<<<<<")
     # 1. LOAD ENVIRONMENT
     ################ Loading GPU or CPU ###########################################################################
     device = pytorch_env()

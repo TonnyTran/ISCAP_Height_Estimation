@@ -13,7 +13,7 @@ from modules_height.model_lstm_triplet_mse import lstm_triplet_mse
 
 
 if __name__ == '__main__':   
-    print(">>>>>> Model 3: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation <<<<<<")
+    print(">>>>>> Model 2: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation <<<<<<")
     # 1. LOAD ENVIRONMENT
     ################ Loading GPU or CPU ###########################################################################
     device = pytorch_env()
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     trainer = Trainer(
         max_epochs=params['max_epochs'],
         logger=csv_logger,               # Logging all the losses, epochs and steps
-        gpus= 0,                         # You may change the number of GPUs as per availability 
+        gpus= 1,                         # You may change the number of GPUs as per availability 
         # row_log_interval=1,
         progress_bar_refresh_rate=2,   # Number of Epochs after progress is shown regularly
         callbacks=[EarlyStopping(monitor='val_loss', patience= params['early_stop_patience'], mode='min')],  # Early Stopping Callback

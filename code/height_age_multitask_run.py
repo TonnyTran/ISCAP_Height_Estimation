@@ -12,7 +12,7 @@ from modules_height.data_module_height_age_multitask import Data_Module_height_a
 from modules_height.model_lstm_height_age_multitask import lstm_height_age_multitask
 
 if __name__ == '__main__': 
-    print(">>>>>> Model 4: LSTM + Cross_Attention + MAE_Loss | FBank Features | MultiTask Estimation (both age & height) <<<<<<")
+    print(">>>>>> Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | MultiTask Estimation (both age & height) <<<<<<")
 
     # 1. LOAD ENVIRONMENT
     ################ Loading GPU or CPU ###########################################################################
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     trainer = Trainer(
         max_epochs=params['max_epochs'],
         logger=csv_logger,              # Logging all the losses, epochs and steps
-        gpus= 0,                         # You may change the number of GPUs as per availability 
+        gpus= 1,                         # You may change the number of GPUs as per availability 
         #row_log_interval=1,
         progress_bar_refresh_rate=100,   # Number of Epochs after progress is shown regularly
         callbacks=[EarlyStopping(monitor='val_loss', patience= params['early_stop_patience'], mode='min')]  # Early Stopping Callback

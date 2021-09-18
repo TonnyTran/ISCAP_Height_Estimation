@@ -12,7 +12,7 @@ from modules_height.data_module_height_age_multitask import Data_Module_height_a
 from modules_height.model_lstm_height_age_multitask import lstm_height_age_multitask
 
 if __name__ == '__main__': 
-    print(">>>>>> Model 4: LSTM + Cross_Attention + MAE_Loss | FBank Features | MultiTask Estimation (both age & height) <<<<<<")
+    print(">>>>>> Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | MultiTask Estimation (both age & height) <<<<<<")
 
     # 1. LOAD ENVIRONMENT
     ################ Loading GPU or CPU ###########################################################################

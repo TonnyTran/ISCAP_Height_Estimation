@@ -103,7 +103,7 @@ Moreover, we use 3 data augmentations for our data:
 We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
 used to gauge the performance of the model on the `test_set` for height estimation. The `batch_size` used is of 32 samples.
 - **Model Architecture**: </br>
-<img src="/imgs/height_triplet.png" width="400">
+<img src="/imgs/cross_attn_model.png" width="400">
 
 ## **Model_2**:
 
@@ -115,5 +115,5 @@ We use a patience of 10 epochs before early stopping the model based on Validati
 used to gauge the performance of the model on the test_set for height estimation. The `batch_size` used is of 32 samples.
 
 - **Model Architecture**: </br>
-<img src="/imgs/height_triplet.png" width="400">
+<img src="/imgs/triplet_loss_model.png" width="400">
 </br></br>

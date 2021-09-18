@@ -50,18 +50,17 @@ This step will download .zip file of TIMIT dataset => extract and then generate 
 
 2. Run the program
 ```bash
-bash run_height_estimation.sh program     # $program in {1, 2, 3, 4} indicates which program you want to run   
+bash run_height_estimation.sh program     # $program in {1, 2} indicates which program you want to run   
+#e.g. bash run_height_estimation.sh 1
 ```
-- program=1     =>    Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | Height Estimation
-- program=2     =>    Model 2: LSTM + Cross_Attention + Center & MSE_Loss | FBank Features | Height Estimation
-- program=3     =>    Model 3: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation
-- program=4     =>    Model 4: LSTM + Cross_Attention + MAE_Loss | FBank Features | MultiTask Estimation (both age & height)
+- program=1     =>    Model 1: LSTM + Cross_Attention + MAE_Loss | FBank Features | MultiTask Estimation (both age & height)
+- program=2     =>    Model 2: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation
 
 3. Test the trained model
 ```bash
-bash test_height_model.sh program     # $program in {1, 2, 3, 4} 
+bash test_height_model.sh program     # $program in {1, 2} 
 ```
-We can control the test program by input program number in {1, 2, 3, 4}.
+We can control the test program by input program number in {1, 2}.
 
 ## Other instructions:
 
@@ -103,7 +102,7 @@ Moreover, we use 3 data augmentations for our data:
 We use a patience of 10 epochs before early stopping the model based on Validation Loss. Finally, `MSE` and `MAE` metrics are 
 used to gauge the performance of the model on the `test_set` for height estimation. The `batch_size` used is of 32 samples.
 - **Model Architecture**: </br>
-<img src="/imgs/cross_attn_model.png" width="400">
+<img src="/imgs/cross_attn_model.png">
 
 ## **Model_2**:
 
@@ -115,5 +114,5 @@ We use a patience of 10 epochs before early stopping the model based on Validati
 used to gauge the performance of the model on the test_set for height estimation. The `batch_size` used is of 32 samples.
 
 - **Model Architecture**: </br>
-<img src="/imgs/triplet_loss_model.png" width="400">
+<img src="/imgs/triplet_loss_model.png">
 </br></br>

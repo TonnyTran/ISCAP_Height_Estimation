@@ -6,7 +6,10 @@
 1) Install Kaldi
 ```bash
 git clone -b 5.4 https://github.com/kaldi-asr/kaldi.git kaldi
-cd kaldi/tools/; make; cd ../src; ./configure; make
+cd kaldi/tools/; 
+# Run this next line to check for dependencies, and then install them
+extras/check_dependencies.sh
+make; cd ../src; ./configure; make depend; make
 ```
 2) Install EspNet
 ```bash
@@ -85,7 +88,7 @@ Moreover, we use 3 data augmentations for our data:
 | ----- | --------------------- | -----------------------------| --------------- | --------------- | ----------------- |
 | 1.    | LSTM + Cross_att      | Mean Squared Error (MSE)     |5.38             | 5.46            | 5.22              |
 | 2.    | LSTM + Cross_att      | MSE + Center Loss            |5.25             | 5.26            | 5.23              |
-| 3.    | LSTM + Cross_att      | MSE + Triplet Loss	       |**5.23**             | 5.08            | 5.31              |
+| 3.    | LSTM + Cross_att      | MSE + Triplet Loss	       |**5.23**             | 5.31            | 5.08              |
 | 4.    | LSTM + Cross_att      | MSE Age + Height             |5.36             | 5.40            | 5.26              |
 | Shareef (2020)| Comb3 (Fstats + formant + harmonic features (amplitude + frequency locations)) |  |  | 5.2             | 4.8               |
 | Singh (2016)| Random Forest   |                              |                 | 5.0             | 5.0               |

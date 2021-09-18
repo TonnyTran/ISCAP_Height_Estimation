@@ -1,14 +1,16 @@
+#####
+# Author:   Tran The Anh
+# Date:     Sept 2021
+# Project:  ISCAP - Identifying Speaker Characteristics through Audio Profiling
+# Topic:    Height Estimation
+# Licensed: Nanyang Technological University
+#####
+
 #!/bin/bash
-
-# Copyright 2019 IIIT-Bangalore (Shreekantha Nadig)
-#  Apache 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
-
 . ./path.sh || exit 1;
 . ./cmd.sh || exit 1;
 
-cuda_cmd_all="/home/tungtest/slurm.pl --gpu 1 --nodelist=node07"
-# cmd="run.pl"
-program=3                 # Choose program that you want to run {1, 2, 3 , 4}
+program=4                 # Choose program that you want to run {1, 2, 3 , 4}
 
 #### Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | Height Estimation
 if [ ${program} -eq 1 ]; then

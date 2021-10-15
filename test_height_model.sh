@@ -1,3 +1,4 @@
+#!/bin/bash
 #####
 # Author:   Tran The Anh
 # Date:     Sept 2021
@@ -6,7 +7,7 @@
 # Licensed: Nanyang Technological University
 #####
 
-#!/bin/bash
+
 . ./path.sh || exit 1;
 . ./cmd.sh || exit 1;
 

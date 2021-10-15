@@ -10,18 +10,12 @@
 # conf/queue.conf in http://kaldi-asr.org/doc/queue.html for more information,
 # or search for the string 'default_config' in utils/queue.pl or utils/slurm.pl.
 
-# export train_cmd="/home/tungtest/slurm.pl "
-# export cuda_cmd="/home/tungtest/slurm.pl --gpu 1 --nodelist=node08 "
-# export cuda_cmd_alt="/home/tungtest/slurm.pl --gpu 1 --nodelist=node06 "
-# #export cuda_cmd="/home/tungtest/slurm.pl --gpu 1 "
-# export decode_cmd="/home/tungtest/slurm.pl --quiet"
-# export cuda_cmd_all="/home/tungtest/slurm.pl --gpu 1 --exclude=node01,node02"
-# export cuda_cmd_all_bigGPU="/home/tungtest/slurm.pl --gpu 1 --exclude=node01,node02,node03,node04,node05,node06,node07"
-# export cuda_cmd_all_rmNode3="/home/tungtest/slurm.pl --gpu 1 --exclude=node01,node02,node03"
-# export cuda_cmd_all_goodGPU="/home/tungtest/slurm.pl --gpu 1 --exclude=node01,node02,node03,node04,node05,node06 "
-# export cuda_cmd_all_goodGPU2="/home/tungtest/slurm.pl --gpu 1 --exclude=node01,node02,node03,node04,node05,node06,node07 "
+export cmd="/home3/theanhtran/slurm.pl"
+export train_cmd="/home3/theanhtran/slurm.pl --gpu 1 --exclude=node0[3-7]"
+export cuda_cmd="/home3/theanhtran/slurm.pl --gpu 1 --nodelist=node08 "
+export cuda_cmd_alt="/home3/theanhtran/slurm.pl --gpu 1 --nodelist=node06 "
 
-
-export train_cmd="run.pl --mem 2G"
-export cuda_cmd="run.pl --mem 2G --gpu 1"
-export decode_cmd="run.pl --mem 4G"
+# export cmd="run.pl"
+# export train_cmd="run.pl --mem 4G --gpu 1"
+# export cuda_cmd="run.pl --mem 2G --gpu 1"
+# export decode_cmd="run.pl --mem 4G"

@@ -3,13 +3,20 @@ import os
 from kaldiio import ReadHelper
 from torch.utils.data.dataset import Dataset
 from .spec_aug import spec_augment 
-from .load_labels import get_labels, get_speakerID
+from .support_functions import get_labels, get_speakerID, repeatPaddingWithGender, zeropadding
 
 #### Dataset directories: Train + Test + Valid
 cwd = os.getcwd()
-train_dataset='scp:'+cwd+'/data/dump/trainNet_sp/feats.scp'
-test_dataset='scp:'+cwd+'/data/dump/test/feats.scp'
-valid_dataset='scp:'+cwd+'/data/dump/valid/feats.scp'
+
+# Wideband data location
+train_wideband='scp:'+cwd+'/data/dump/train/feats.scp'
+test_wideband='scp:'+cwd+'/data/dump/test/feats.scp'
+valid_wideband='scp:'+cwd+'/data/dump/valid/feats.scp'
+
+# Narrowband data location
+train_narrowband='scp:'+cwd+'/data/dump_narrowband/train_codec/feats.scp'
+test_narrowband='scp:'+cwd+'/data/dump_narrowband/test_codec/feats.scp'
+valid_narrowband='scp:'+cwd+'/data/dump_narrowband/valid_codec/feats.scp'
 
 ### Label file
 label_file=cwd+'/local/data_cleaned.xlsx'
@@ -18,11 +25,16 @@ map_dict = get_labels(label_file)
 # TRAIN DATA
 class Train_Dataset_height_age_multitask(Dataset):
     # load the dataset
-    def __init__(self):
-        
+    def __init__(self, band='wideband'):
+        self.band=band
+        train_dataset = train_wideband
+        if self.band =='narrowband':
+            train_dataset = train_narrowband
+        print("Training data location: " + train_dataset)
         with ReadHelper(train_dataset) as reader:
             self.dic = { u:d for u,d in reader }
         self.dic_keys = list(self.dic.keys())
+        print(len(self.dic_keys))
         
     # number of rows in the dataset
     def __len__(self):
@@ -34,17 +46,10 @@ class Train_Dataset_height_age_multitask(Dataset):
         data = self.dic[self.dic_keys[idx]]
         label = get_speakerID(self.dic_keys[idx])  
         
-        if data.shape[0] < 800:
-            data = np.concatenate([data, np.array([[0]*83]*(800-data.shape[0]))])              
-        elif data.shape[0] > 800:
-            data = data[:800]
-            
-        data = spec_augment(data)
-            
-        if label[0] == 'F':
-            data = (np.concatenate((data, np.array([1]*800).reshape(800,1)), axis=1))                
-        elif label[0] == 'M':
-            data = (np.concatenate((data, np.array([0]*800).reshape(800,1)), axis=1))
+        # repeat padding
+        data = repeatPaddingWithGender(data, 800, label[0])
+        # # zero padding
+        # data = zeropadding(data, 800, label[0])
         
         label_ht = float(map_dict[label[1:5]][0])
         label_age = float(map_dict[label[1:5]][1])
@@ -57,8 +62,12 @@ class Train_Dataset_height_age_multitask(Dataset):
 # TEST DATA 
 class Test_Dataset_height_age_multitask(Dataset):
     # load the dataset
-    def __init__(self):
-
+    def __init__(self, band='wideband'):
+        self.band=band
+        test_dataset = test_wideband
+        if self.band =='narrowband':
+            test_dataset = test_narrowband
+        print("Testing data location: " + test_dataset)
         with ReadHelper(test_dataset) as reader:
             self.dic = { u:d for u,d in reader }
         self.dic_keys = list(self.dic.keys())
@@ -73,15 +82,10 @@ class Test_Dataset_height_age_multitask(Dataset):
         data = self.dic[self.dic_keys[idx]]
         label = get_speakerID(self.dic_keys[idx])  
         
-        if data.shape[0] < 800:
-            data = np.concatenate([data, np.array([[0]*83]*(800-data.shape[0]))])              
-        elif data.shape[0] > 800:
-            data = data[:800]
-            
-        if label[0] == 'F':
-            data = (np.concatenate((data, np.array([1]*800).reshape(800,1)), axis=1))                
-        elif label[0] == 'M':
-            data = (np.concatenate((data, np.array([0]*800).reshape(800,1)), axis=1))
+        # repeat padding
+        data = repeatPaddingWithGender(data, 800, label[0])
+        # # zero padding
+        # data = zeropadding(data, 800, label[0])
             
         if label[0] == 'M':  
             gender = 0
@@ -100,8 +104,12 @@ class Test_Dataset_height_age_multitask(Dataset):
 # VALIDATION DATA
 class Val_Dataset_height_age_multitask(Dataset):
     # load the dataset
-    def __init__(self):
-        
+    def __init__(self, band='wideband'):
+        self.band=band
+        valid_dataset = valid_wideband
+        if self.band =='narrowband':
+            valid_dataset = valid_narrowband
+            
         with ReadHelper(valid_dataset) as reader:
             self.dic = { u:d for u,d in reader }
         self.dic_keys = list(self.dic.keys())
@@ -116,15 +124,10 @@ class Val_Dataset_height_age_multitask(Dataset):
         data = self.dic[self.dic_keys[idx]]
         label = get_speakerID(self.dic_keys[idx])  
         
-        if data.shape[0] < 800:
-            data = np.concatenate([data, np.array([[0]*83]*(800-data.shape[0]))])              
-        elif data.shape[0] > 800:
-            data = data[:800]
-            
-        if label[0] == 'F':
-            data = (np.concatenate((data, np.array([1]*800).reshape(800,1)), axis=1))                
-        elif label[0] == 'M':
-            data = (np.concatenate((data, np.array([0]*800).reshape(800,1)), axis=1))
+        # repeat padding
+        data = repeatPaddingWithGender(data, 800, label[0])
+        # # zero padding
+        # data = zeropadding(data, 800, label[0])
         
         label_ht = float(map_dict[label[1:5]][0])
         label_age = float(map_dict[label[1:5]][1])

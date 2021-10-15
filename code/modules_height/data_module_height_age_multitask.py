@@ -18,11 +18,12 @@ class Data_Module_height_age_multitask(pl.LightningDataModule):
       and processing work in one place.
     '''
     
-    def __init__(self, seq_len = 800, batch_size = 32, num_workers=0):
+    def __init__(self, seq_len = 800, batch_size = 32, num_workers=0,band='wideband'):
         super().__init__()
         # self.seq_len = seq_len
         self.batch_size = batch_size
         self.num_workers = num_workers
+        self.band = band
 
     def prepare_data(self):
         pass
@@ -34,7 +35,7 @@ class Data_Module_height_age_multitask(pl.LightningDataModule):
         pass
     
     def train_dataloader(self):
-        train_dataset = Train_Dataset_height_age_multitask()
+        train_dataset = Train_Dataset_height_age_multitask(band=self.band)
         train_loader = DataLoader(train_dataset, 
                                   batch_size = self.batch_size, 
                                   shuffle = True, 
@@ -43,7 +44,7 @@ class Data_Module_height_age_multitask(pl.LightningDataModule):
         return train_loader
 
     def val_dataloader(self):
-        val_dataset = Val_Dataset_height_age_multitask()
+        val_dataset = Val_Dataset_height_age_multitask(band=self.band)
         val_loader = DataLoader(val_dataset, 
                                 batch_size = self.batch_size, 
                                 shuffle = False, 
@@ -52,7 +53,7 @@ class Data_Module_height_age_multitask(pl.LightningDataModule):
         return val_loader
 
     def test_dataloader(self):
-        test_dataset = Test_Dataset_height_age_multitask()
+        test_dataset = Test_Dataset_height_age_multitask(band=self.band)
         test_loader = DataLoader(test_dataset, 
                                  batch_size = self.batch_size, 
                                  shuffle = False, 

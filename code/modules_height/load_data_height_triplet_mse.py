@@ -4,13 +4,20 @@ import math, random
 from kaldiio import ReadHelper
 from torch.utils.data.dataset import Dataset
 from .spec_aug import spec_augment 
-from .load_labels import get_labels, get_speakerID
+from .support_functions import get_labels, get_speakerID, repeatPaddingWithGender
 
 #### Dataset directories: Train + Test + Valid
 cwd = os.getcwd()
-train_dataset='scp:'+cwd+'/data/dump/trainNet_sp/feats.scp'
-test_dataset='scp:'+cwd+'/data/dump/test/feats.scp'
-valid_dataset='scp:'+cwd+'/data/dump/valid/feats.scp'
+
+# Wideband data location
+train_wideband='scp:'+cwd+'/data/dump/train/feats.scp'
+test_wideband='scp:'+cwd+'/data/dump/test/feats.scp'
+valid_wideband='scp:'+cwd+'/data/dump/valid/feats.scp'
+
+# Narrowband data location
+train_narrowband='scp:'+cwd+'/data/dump_narrowband/train_codec/feats.scp'
+test_narrowband='scp:'+cwd+'/data/dump_narrowband/test_codec/feats.scp'
+valid_narrowband='scp:'+cwd+'/data/dump_narrowband/valid_codec/feats.scp'
 
 ### Label file
 label_file=cwd+'/local/data_cleaned.xlsx'
@@ -19,7 +26,12 @@ map_dict = get_labels(label_file)
 # TRAIN DATA
 class Train_Dataset_height_triplet_mse(Dataset):
     # load the dataset
-    def __init__(self):        
+    def __init__(self, band='wideband'):
+        self.band=band
+        train_dataset = train_wideband
+        if self.band =='narrowband':
+            train_dataset = train_narrowband
+        print("Training data location: " + train_dataset)
         with ReadHelper(train_dataset) as reader:
             self.dic = { u:d for u,d in reader }
         self.dic_keys = list(self.dic.keys())
@@ -52,39 +64,12 @@ class Train_Dataset_height_triplet_mse(Dataset):
         negative_label = random.choice(negative_list)
         negative_data = self.dic[negative_label]
 
-        if anchor_data.shape[0] < 800:
-            anchor_data = np.concatenate([anchor_data, np.array([[0]*83]*(800-anchor_data.shape[0]))])            
-        elif anchor_data.shape[0] > 800:
-            anchor_data = anchor_data[:800]
-            
-        if anchor_label[0] == 'F':
-            anchor_data = (np.concatenate((anchor_data, np.array([1]*800).reshape(800,1)), axis=1))
-        elif anchor_label[0] == 'M':
-            anchor_data = (np.concatenate((anchor_data, np.array([0]*800).reshape(800,1)), axis=1))
-
-#####################
-
-        if positive_data.shape[0] < 800:
-            positive_data = np.concatenate([positive_data, np.array([[0]*83]*(800-positive_data.shape[0]))])
-        elif positive_data.shape[0] > 800:
-            positive_data = positive_data[:800]
-            
-        if get_speakerID(positive_label)[0] == 'F':
-            positive_data = (np.concatenate((positive_data, np.array([1]*800).reshape(800,1)), axis=1))
-        elif get_speakerID(positive_label)[0] == 'M':
-            positive_data = (np.concatenate((positive_data, np.array([0]*800).reshape(800,1)), axis=1))
-
-#####################
-
-        if negative_data.shape[0] < 800:
-            negative_data = np.concatenate([negative_data, np.array([[0]*83]*(800-negative_data.shape[0]))])
-        elif negative_data.shape[0] > 800:
-            negative_data = negative_data[:800]
-            
-        if get_speakerID(negative_label)[0] == 'F':
-            negative_data = (np.concatenate((negative_data, np.array([1]*800).reshape(800,1)), axis=1))                
-        elif get_speakerID(negative_label)[0] == 'M':
-            negative_data = (np.concatenate((negative_data, np.array([0]*800).reshape(800,1)), axis=1))
+        # repeat padding anchor
+        anchor_data = repeatPaddingWithGender(anchor_data, 800, anchor_label[0])
+        # repeat padding positive
+        positive_data = repeatPaddingWithGender(positive_data, 800, get_speakerID(positive_label)[0])
+        # repeat padding negative
+        negative_data = repeatPaddingWithGender(negative_data, 800, get_speakerID(negative_label)[0])
         
         anchor_data, positive_data, negative_data = spec_augment(anchor_data), spec_augment(positive_data), spec_augment(negative_data)
         
@@ -97,7 +82,12 @@ class Train_Dataset_height_triplet_mse(Dataset):
 # TEST DATA 
 class Test_Dataset_height_triplet_mse(Dataset):
     # load the dataset
-    def __init__(self):
+    def __init__(self, band='wideband'):
+        self.band=band
+        test_dataset = test_wideband
+        if self.band =='narrowband':
+            test_dataset = test_narrowband
+        print("Testing data location: " + test_dataset)
         with ReadHelper(test_dataset) as reader:
             self.dic = { u:d for u,d in reader }
         self.dic_keys = list(self.dic.keys())
@@ -111,16 +101,9 @@ class Test_Dataset_height_triplet_mse(Dataset):
         
         data = self.dic[self.dic_keys[idx]]
         label = get_speakerID(self.dic_keys[idx])
-        
-        if data.shape[0] < 800:
-            data = np.concatenate([data, np.array([[0]*83]*(800-data.shape[0]))])              
-        elif data.shape[0] > 800:
-            data = data[:800]
-            
-        if label[0] == 'F':
-            data = (np.concatenate((data, np.array([1]*800).reshape(800,1)), axis=1))                
-        elif label[0] == 'M':
-            data = (np.concatenate((data, np.array([0]*800).reshape(800,1)), axis=1))
+
+        # repeat padding
+        data = repeatPaddingWithGender(data, 800, label[0])
             
         if label[0] == 'M':  
             gender = 0
@@ -137,8 +120,13 @@ class Test_Dataset_height_triplet_mse(Dataset):
 # VALIDATION DATA
 class Val_Dataset_height_triplet_mse(Dataset):
     # load the dataset
-    def __init__(self):
-        with ReadHelper(test_dataset) as reader:
+    def __init__(self, band='wideband'):
+        self.band=band
+        valid_dataset = valid_wideband
+        if self.band =='narrowband':
+            valid_dataset = valid_narrowband
+            
+        with ReadHelper(valid_dataset) as reader:
             self.dic = { u:d for u,d in reader }
         self.dic_keys = list(self.dic.keys())
         
@@ -168,39 +156,12 @@ class Val_Dataset_height_triplet_mse(Dataset):
         negative_label = random.choice(negative_list)
         negative_data = self.dic[negative_label]
 
-        if anchor_data.shape[0] < 800:
-            anchor_data = np.concatenate([anchor_data, np.array([[0]*83]*(800-anchor_data.shape[0]))])              
-        elif anchor_data.shape[0] > 800:
-            anchor_data = anchor_data[:800]
-            
-        if anchor_label[0] == 'F':
-            anchor_data = (np.concatenate((anchor_data, np.array([1]*800).reshape(800,1)), axis=1))
-        elif anchor_label[0] == 'M':
-            anchor_data = (np.concatenate((anchor_data, np.array([0]*800).reshape(800,1)), axis=1))
-
-#####################
-
-        if positive_data.shape[0] < 800:
-            positive_data = np.concatenate([positive_data, np.array([[0]*83]*(800-positive_data.shape[0]))])              
-        elif positive_data.shape[0] > 800:
-            positive_data = positive_data[:800]
-            
-        if get_speakerID(positive_label)[0] == 'F':
-            positive_data = (np.concatenate((positive_data, np.array([1]*800).reshape(800,1)), axis=1))                
-        elif get_speakerID(positive_label)[0] == 'M':
-            positive_data = (np.concatenate((positive_data, np.array([0]*800).reshape(800,1)), axis=1))
-
-#####################
-
-        if negative_data.shape[0] < 800:
-            negative_data = np.concatenate([negative_data, np.array([[0]*83]*(800-negative_data.shape[0]))])              
-        elif negative_data.shape[0] > 800:
-            negative_data = negative_data[:800]
-            
-        if get_speakerID(negative_label)[0] == 'F':
-            negative_data = (np.concatenate((negative_data, np.array([1]*800).reshape(800,1)), axis=1))                
-        elif get_speakerID(negative_label)[0] == 'M':
-            negative_data = (np.concatenate((negative_data, np.array([0]*800).reshape(800,1)), axis=1))
+        # repeat padding anchor
+        anchor_data = repeatPaddingWithGender(anchor_data, 800, anchor_label[0])
+        # repeat padding positive
+        positive_data = repeatPaddingWithGender(positive_data, 800, get_speakerID(positive_label)[0])
+        # repeat padding negative
+        negative_data = repeatPaddingWithGender(negative_data, 800, get_speakerID(negative_label)[0])
             
         #print(data.shape)
         

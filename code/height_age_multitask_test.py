@@ -13,7 +13,7 @@ from modules_height.model_lstm_height_age_multitask import lstm_height_age_multi
 
 if __name__ == '__main__': 
     print(">>>>>> Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | MultiTask Estimation (both age & height) <<<<<<")
-
+    band='wideband'
     # 1. LOAD ENVIRONMENT
     ################ Loading GPU or CPU ###########################################################################
     device = pytorch_env()
@@ -47,13 +47,7 @@ if __name__ == '__main__':
     )
     ################################################################################################################
 
-    trainer = Trainer()
-    dm = Data_Module_height_age_multitask(
-        seq_len = params['seq_len'],
-        batch_size = params['batch_size'], num_workers=4,     # Number of workers for Train_Data_Loader
-    )
-    test_loader = dm.test_dataloader()
-    ###################################################################################################
+    
     # 3. SELECT THE MODEL TO USE
 
     model = lstm_height_age_multitask.load_from_checkpoint(checkpoint_path,
@@ -71,6 +65,15 @@ if __name__ == '__main__':
                     mse_all = mse_all, mae_all = mae_all
     )
     ####################################################################################################
+
+    trainer = Trainer()
+    dm = Data_Module_height_age_multitask(
+        seq_len = params['seq_len'],
+        batch_size = params['batch_size'], num_workers=4,     # Number of workers for Train_Data_Loader
+        band=band,
+    )
+    test_loader = dm.test_dataloader()
+    ###################################################################################################
 
     # 4. TEST THE MODEL
     trainer.test(model, test_loader)                    

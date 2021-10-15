@@ -1,3 +1,4 @@
+#!/bin/bash
 #####
 # Author:   Tran The Anh
 # Date:     Sept 2021
@@ -6,12 +7,12 @@
 # Licensed: Nanyang Technological University
 #####
 
-#!/bin/bash
 . ./path.sh || exit 1;
+. ./cmd.sh || exit 1;
 
 program=$1                 # Choose program that you want to run {1, 2}
 
-if [ $1 =='' ]; then
+if [ -z "${program}" ]; then
     echo 'Warning: Please input the program that you want to run which is in {1, 2}.'
     echo 'E.g. bash run_height_estimation.sh 1 => run program 1'
     exit 1

@@ -29,6 +29,10 @@ conda install torchvision==0.9.0 torchaudio==0.8.0 -c pytorch
 ```bash
 conda install pytorch-lightning -c conda-forge
 ```
+5) Install ffmpeg
+```bash
+conda install ffmpeg
+```
 ### Download the project
 1) Clone the project from GitHub into your workspace
 ```bash

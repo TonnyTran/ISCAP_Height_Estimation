@@ -17,7 +17,7 @@ import os
 if __name__ == '__main__':   
     print(">>>>>> Model 2: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation <<<<<<")
     band='narrowband'         # {wideband, narrowband} change this parameter to run the program on wideband or narrowband data
-    running='TRAINING'         # {TRAINING, TESTING} -> select to monitor the program 
+    running='TESTING'         # {TRAINING, TESTING} -> select to monitor the program 
     print(running + " On data type: " + band)
     # 1. LOAD ENVIRONMENT
     ################ Loading GPU or CPU ###########################################################################
@@ -121,8 +121,12 @@ if __name__ == '__main__':
     # In Testing process: Using trained model to test and get the result
     elif running == 'TESTING':
         ##### Change to the location that the trained model is stored
-        checkpoint_path="best_model/height_triplet_mse/height_triplet_mse_best_model.ckpt"
-        band='wideband'         # {wideband, narrowband}
+        # checkpoint_path="best_model/height_triplet_mse_wideband/height_triplet_mse_wideband_bestmodel.ckpt"
+        # band='wideband'         # {wideband, narrowband}
+
+        checkpoint_path="best_model/height_triplet_mse_narrowband/height_triplet_mse_narrowband_bestmodel.ckpt"
+        band='narrowband'         # {wideband, narrowband}
+
         trainer = Trainer()
         # load test data
         dm = Data_Module_height_triplet_mse(

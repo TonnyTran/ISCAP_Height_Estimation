@@ -15,7 +15,7 @@ import sys
 if __name__ == '__main__': 
     print(">>>>>> Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | MultiTask Estimation (both age & height) <<<<<<")
     band='wideband'         # {wideband, narrowband} -> change this parameter to run the program on wideband or narrowband data    
-    running='TRAINING'         # {TRAINING, TESTING} -> select to monitor the program 
+    running='TESTING'         # {TRAINING, TESTING} -> select to monitor the program 
     print(running + " On data type: " + band)
 
     # 1. LOAD ENVIRONMENT
@@ -118,8 +118,11 @@ if __name__ == '__main__':
     # In Testing process: Using trained model to test and get the result
     elif running == 'TESTING':
         ##### Change to the location that the trained model is stored
-        checkpoint_path="best_model/height_age_multitask/height_age_multitask_bestmodel.ckpt"
-        band='wideband'         # {wideband, narrowband}
+        # checkpoint_path="best_model/height_age_multitask_wideband/height_age_multitask_wideband_bestmodel.ckpt"
+        # band='wideband'         # {wideband, narrowband}
+
+        checkpoint_path="best_model/height_age_multitask_narrowband/height_age_multitask_narrowband_bestmodel.ckpt"
+        band='narrowband'         # {wideband, narrowband}
 
         trainer = Trainer()
         # load test data

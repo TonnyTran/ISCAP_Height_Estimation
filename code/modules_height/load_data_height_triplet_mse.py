@@ -4,7 +4,7 @@ import math, random
 from kaldiio import ReadHelper
 from torch.utils.data.dataset import Dataset
 from .spec_aug import spec_augment 
-from .support_functions import get_labels, get_speakerID, repeatPaddingWithGender
+from .support_functions import get_labels, get_speakerID, repeatPaddingWithGender, zeropadding
 
 #### Dataset directories: Train + Test + Valid
 cwd = os.getcwd()
@@ -70,6 +70,13 @@ class Train_Dataset_height_triplet_mse(Dataset):
         positive_data = repeatPaddingWithGender(positive_data, 800, get_speakerID(positive_label)[0])
         # repeat padding negative
         negative_data = repeatPaddingWithGender(negative_data, 800, get_speakerID(negative_label)[0])
+
+        # # zero padding anchor
+        # anchor_data = zeropadding(anchor_data, 800, anchor_label[0])
+        # # zero padding positive
+        # positive_data = zeropadding(positive_data, 800, get_speakerID(positive_label)[0])
+        # # zero padding negative
+        # negative_data = zeropadding(negative_data, 800, get_speakerID(negative_label)[0])
         
         anchor_data, positive_data, negative_data = spec_augment(anchor_data), spec_augment(positive_data), spec_augment(negative_data)
         
@@ -104,6 +111,9 @@ class Test_Dataset_height_triplet_mse(Dataset):
 
         # repeat padding
         data = repeatPaddingWithGender(data, 800, label[0])
+
+        # # zero padding
+        # data = zeropadding(data, 800, label[0])
             
         if label[0] == 'M':  
             gender = 0
@@ -162,6 +172,13 @@ class Val_Dataset_height_triplet_mse(Dataset):
         positive_data = repeatPaddingWithGender(positive_data, 800, get_speakerID(positive_label)[0])
         # repeat padding negative
         negative_data = repeatPaddingWithGender(negative_data, 800, get_speakerID(negative_label)[0])
+
+        # # zero padding anchor
+        # anchor_data = zeropadding(anchor_data, 800, anchor_label[0])
+        # # zero padding positive
+        # positive_data = zeropadding(positive_data, 800, get_speakerID(positive_label)[0])
+        # # zero padding negative
+        # negative_data = zeropadding(negative_data, 800, get_speakerID(negative_label)[0])
             
         #print(data.shape)
         

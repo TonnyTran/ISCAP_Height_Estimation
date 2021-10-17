@@ -14,7 +14,7 @@ import sys
 
 if __name__ == '__main__': 
     print(">>>>>> Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | MultiTask Estimation (both age & height) <<<<<<")
-    band='narrowband'         # {wideband, narrowband} -> change this parameter to run the program on wideband or narrowband data    
+    band='wideband'         # {wideband, narrowband} -> change this parameter to run the program on wideband or narrowband data    
     running='TRAINING'         # {TRAINING, TESTING} -> select to monitor the program 
     print(running + " On data type: " + band)
 
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         hidden_size = 64,               # Number of Hidden Units of LSTM
         num_layers = 1,                 # Number of LSTM Layers
         dropout = 0.2,                  # Dropout for LSTM and Dense Layer
-        learning_rate = 0.001,          # Learning Rate
+        learning_rate = 0.0005,          # Learning Rate
         output_size = 1,                # Number of Outputs (1 for height estimation)
         early_stop_patience = 10        # Number of consecutive epochs without any loss reduction after which training stops 
     )
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # In Training process: Train a new model
     if running == 'TRAINING':
         program_name='height_age_multitask_'+band
-        version='01'
+        version='05'
         csv_logger = CSVLogger('exp/', program_name, version) # Creates a CSV in the folder which contains all the logs (Training + Testing + Validation)
 
         trainer = Trainer(
@@ -93,7 +93,10 @@ if __name__ == '__main__':
         # Testing the trained Model
         trainer.test()
 
-        result_file='exp/' + program_name +'/' + version + '/result.txt'
+        result_dir='exp/' + program_name +'/' + version
+        result_file=result_dir + '/result.txt'
+        print("Result is save in: " + result_file)
+
         sys.stdout = open(result_file, "w")
         print('########## TESTING for HEIGHT ESTIMATION on Test_Set ##########')
         err_mse_female = mse_female.compute()
@@ -116,6 +119,7 @@ if __name__ == '__main__':
     elif running == 'TESTING':
         ##### Change to the location that the trained model is stored
         checkpoint_path="best_model/height_age_multitask/height_age_multitask_bestmodel.ckpt"
+        band='wideband'         # {wideband, narrowband}
 
         trainer = Trainer()
         # load test data
@@ -145,17 +149,17 @@ if __name__ == '__main__':
         # TEST THE MODEL
         trainer.test(model, test_loader) 
 
-    print('########## TESTING for HEIGHT ESTIMATION on Test_Set ##########')
-    err_mse_female = mse_female.compute()
-    err_mae_female = mae_female.compute()
-    err_mse_male = mse_male.compute()
-    err_mae_male = mae_male.compute()
-    err_mse_all = mse_all.compute()
-    err_mae_all = mae_all.compute()
-    print(f"MAE Height on all Male data:                {err_mae_male}")
-    print(f"MAE Height on all Female data:              {err_mae_female}")
-    print(f"MAE Height on both Male and Female data:    {err_mae_all}")
-    print("-----------------------------------------")    
-    print(f"RMSE Height on all Male data:               {np.sqrt(err_mse_male.cpu().numpy())}")
-    print(f"RMSE Height on all Female data:             {np.sqrt(err_mse_female.cpu().numpy())}")
-    print(f"RMSE Height on both Male and Female data:   {np.sqrt(err_mse_all.cpu().numpy())}")
+        print('########## TESTING for HEIGHT ESTIMATION on Test_Set ##########')
+        err_mse_female = mse_female.compute()
+        err_mae_female = mae_female.compute()
+        err_mse_male = mse_male.compute()
+        err_mae_male = mae_male.compute()
+        err_mse_all = mse_all.compute()
+        err_mae_all = mae_all.compute()
+        print(f"MAE Height on all Male data:                {err_mae_male}")
+        print(f"MAE Height on all Female data:              {err_mae_female}")
+        print(f"MAE Height on both Male and Female data:    {err_mae_all}")
+        print("-----------------------------------------")    
+        print(f"RMSE Height on all Male data:               {np.sqrt(err_mse_male.cpu().numpy())}")
+        print(f"RMSE Height on all Female data:             {np.sqrt(err_mse_female.cpu().numpy())}")
+        print(f"RMSE Height on both Male and Female data:   {np.sqrt(err_mse_all.cpu().numpy())}")

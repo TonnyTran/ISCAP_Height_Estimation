@@ -11,6 +11,7 @@ from modules_height.pytorch_environment import pytorch_env
 from modules_height.data_module_height_triplet_mse import Data_Module_height_triplet_mse
 from modules_height.model_lstm_triplet_mse import lstm_triplet_mse
 import sys
+import os
 
 
 if __name__ == '__main__':   
@@ -43,7 +44,7 @@ if __name__ == '__main__':
         hidden_size = 64,               # Number of Hidden Units of LSTM
         num_layers = 1,                 # Number of LSTM Layers
         dropout = 0.2,                  # Dropout for LSTM and Dense Layer
-        learning_rate = 0.001,          # Learning Rate
+        learning_rate = 0.0005,          # Learning Rate
         output_size = 1,                # Number of Outputs (1 for height estimation)
         early_stop_patience = 10        # Number of consecutive epochs without any loss reduction after which training stops 
     )
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     # In Training process: Train a new model
     if running == 'TRAINING':
         program_name='height_triplet_mse_'+band
-        version='01'
+        version='12'
         csv_logger = CSVLogger('exp/', program_name, version) # Creates a CSV in the folder which contains all the logs (Training + Testing + Validation)
     
         trainer = Trainer(
@@ -60,14 +61,15 @@ if __name__ == '__main__':
             logger=csv_logger,               # Logging all the losses, epochs and steps
             gpus= 1,                         # You may change the number of GPUs as per availability 
             # row_log_interval=1,
-            progress_bar_refresh_rate=2,   # Number of Epochs after progress is shown regularly
+            progress_bar_refresh_rate=20,   # Number of Epochs after progress is shown regularly
             callbacks=[EarlyStopping(monitor='val_loss', patience= params['early_stop_patience'], mode='min')],  # Early Stopping Callback
-            flush_logs_every_n_steps=10
+            flush_logs_every_n_steps=1
         )
 
         dm = Data_Module_height_triplet_mse(
             seq_len = params['seq_len'],
             batch_size = params['batch_size'], num_workers=4,     # Number of workers for Train_Data_Loader
+            band=band,
         )
         ###################################################################################################
         # 3. SELECT THE MODEL TO USE
@@ -88,14 +90,16 @@ if __name__ == '__main__':
         ####################################################################################################
 
         # 4. TRAIN AND TEST THE MODEL
-
         # Training the Model
         trainer.fit(model, dm)            
 
         # # Testing the Model
         trainer.test()
 
-        result_file='exp/' + program_name +'/' + version + '/result.txt'
+        result_dir='exp/' + program_name +'/' + version
+        result_file=result_dir + '/result.txt'
+        print("Result is save in: " + result_file)
+        
         sys.stdout = open(result_file, "w")
         print('########## TESTING for HEIGHT ESTIMATION on Test_Set ##########')
         err_mse_female = mse_female.compute()
@@ -110,8 +114,7 @@ if __name__ == '__main__':
         print("_________________________________________")    
         print(f"RMSE Height on all Male data:               {np.sqrt(err_mse_male.cpu().numpy())}")
         print(f"RMSE Height on all Female data:             {np.sqrt(err_mse_female.cpu().numpy())}")
-        print(f"RMSE Height on both Male and Female data:   {np.sqrt(err_mse_all.cpu().numpy())}")
-        print(open(result_file, 'r').read())
+        print(f"RMSE Height on both Male and Female data:   {np.sqrt(err_mse_all.cpu().numpy())}")        
         sys.stdout.close()
     ####################################################################################################
 
@@ -119,16 +122,16 @@ if __name__ == '__main__':
     elif running == 'TESTING':
         ##### Change to the location that the trained model is stored
         checkpoint_path="best_model/height_triplet_mse/height_triplet_mse_best_model.ckpt"
-
+        band='wideband'         # {wideband, narrowband}
         trainer = Trainer()
         # load test data
         dm = Data_Module_height_triplet_mse(
             seq_len = params['seq_len'],
             batch_size = params['batch_size'], num_workers=4,     # Number of workers for Train_Data_Loader
+            band=band,
         )
         test_loader = dm.test_dataloader()
 
-        # 3. SELECT THE MODEL TO USE
         # 3. SELECT THE MODEL TO USE
         model = lstm_triplet_mse.load_from_checkpoint(checkpoint_path,
             n_features = params['n_features'],
@@ -148,18 +151,18 @@ if __name__ == '__main__':
         # TEST THE MODEL
         trainer.test(model, test_loader) 
 
-    print('########## TESTING for HEIGHT ESTIMATION on Test_Set ##########')
-    err_mse_female = mse_female.compute()
-    err_mae_female = mae_female.compute()
-    err_mse_male = mse_male.compute()
-    err_mae_male = mae_male.compute()
-    err_mse_all = mse_all.compute()
-    err_mae_all = mae_all.compute()
-    print(f"MAE Height on all Male data:                {err_mae_male}")
-    print(f"MAE Height on all Female data:              {err_mae_female}")
-    print(f"MAE Height on both Male and Female data:    {err_mae_all}")
-    print("-----------------------------------------")    
-    print(f"RMSE Height on all Male data:               {np.sqrt(err_mse_male.cpu().numpy())}")
-    print(f"RMSE Height on all Female data:             {np.sqrt(err_mse_female.cpu().numpy())}")
-    print(f"RMSE Height on both Male and Female data:   {np.sqrt(err_mse_all.cpu().numpy())}")
+        print('########## TESTING for HEIGHT ESTIMATION on Test_Set ##########')
+        err_mse_female = mse_female.compute()
+        err_mae_female = mae_female.compute()
+        err_mse_male = mse_male.compute()
+        err_mae_male = mae_male.compute()
+        err_mse_all = mse_all.compute()
+        err_mae_all = mae_all.compute()
+        print(f"MAE Height on all Male data:                {err_mae_male}")
+        print(f"MAE Height on all Female data:              {err_mae_female}")
+        print(f"MAE Height on both Male and Female data:    {err_mae_all}")
+        print("-----------------------------------------")    
+        print(f"RMSE Height on all Male data:               {np.sqrt(err_mse_male.cpu().numpy())}")
+        print(f"RMSE Height on all Female data:             {np.sqrt(err_mse_female.cpu().numpy())}")
+        print(f"RMSE Height on both Male and Female data:   {np.sqrt(err_mse_all.cpu().numpy())}")
 

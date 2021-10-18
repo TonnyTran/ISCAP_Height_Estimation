@@ -57,14 +57,21 @@ This step will download .zip file of TIMIT dataset => extract and then generate 
 bash run_height_estimation.sh program     # $program in {1, 2} indicates which program you want to run   
 #e.g. bash run_height_estimation.sh 1
 ```
+In file 
 - program=1     =>    Model 1: LSTM + Cross_Attention + MAE_Loss | FBank Features | MultiTask Estimation (both age & height)
 - program=2     =>    Model 2: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation
 
+Set up parameter in run_height_estimation.sh as follows.
+running='TRAINING'         # {TRAINING, TESTING} -> select to monitor the program 
+band='wideband'         # {wideband, narrowband} change this parameter to run the program on wideband or narrowband data
 3. Test the trained model
 ```bash
 bash test_height_model.sh program     # $program in {1, 2} 
 ```
 We can control the test program by input program number in {1, 2}.
+Set up parameter in run_height_estimation.sh as follows.
+running='TESTING'         # {TRAINING, TESTING} -> select to monitor the program 
+band='wideband'         # {wideband, narrowband} change this parameter to run the program on wideband or narrowband data
 
 ## Other instructions:
 

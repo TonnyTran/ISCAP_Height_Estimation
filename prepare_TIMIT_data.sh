@@ -85,7 +85,7 @@ fi
 if [ ! -z $step02 ]; then
     echo "____________Step 2: Split train set into Training set and Validation set____________"
     utils/subset_data_dir_tr_cv.sh --cv-spk-percent 5 $data/original/train $data/original/trainNet $data/original/valid
-    local/perturb_data_dir_speed_tempo.sh $data/original/trainNet $data/original/trainNet_sp_tempo  ### speed perturbation
+    local/perturb_data_dir_speed_tempo.sh $data/original/trainNet $data/original/trainNet_sp_tempo  ### speed perturbation (Tempo)
     cp -avr $data/original/trainNet_sp_tempo $data/train
     cp -avr $data/original/valid $data/valid
     cp -avr $data/original/test $data/test

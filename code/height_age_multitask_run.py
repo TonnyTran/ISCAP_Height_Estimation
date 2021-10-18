@@ -13,9 +13,9 @@ from modules_height.model_lstm_height_age_multitask import lstm_height_age_multi
 import sys
 
 if __name__ == '__main__': 
-    print(">>>>>> Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | MultiTask Estimation (both age & height) <<<<<<")
-    band='wideband'         # {wideband, narrowband} -> change this parameter to run the program on wideband or narrowband data    
-    running='TESTING'         # {TRAINING, TESTING} -> select to monitor the program 
+    print(">>>>>> Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | MultiTask Estimation (both age & height) <<<<<<")   
+    running=sys.argv[1]         # {TRAINING, TESTING} -> select to monitor the program 
+    band=sys.argv[2]            # {wideband, narrowband} -> change this parameter to run the program on wideband or narrowband data 
     print(running + " On data type: " + band)
 
     # 1. LOAD ENVIRONMENT
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         hidden_size = 64,               # Number of Hidden Units of LSTM
         num_layers = 1,                 # Number of LSTM Layers
         dropout = 0.2,                  # Dropout for LSTM and Dense Layer
-        learning_rate = 0.0005,          # Learning Rate
+        learning_rate = 0.0001,          # Learning Rate
         output_size = 1,                # Number of Outputs (1 for height estimation)
         early_stop_patience = 10        # Number of consecutive epochs without any loss reduction after which training stops 
     )
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # In Training process: Train a new model
     if running == 'TRAINING':
         program_name='height_age_multitask_'+band
-        version='05'
+        version='01'
         csv_logger = CSVLogger('exp/', program_name, version) # Creates a CSV in the folder which contains all the logs (Training + Testing + Validation)
 
         trainer = Trainer(
@@ -118,11 +118,10 @@ if __name__ == '__main__':
     # In Testing process: Using trained model to test and get the result
     elif running == 'TESTING':
         ##### Change to the location that the trained model is stored
-        # checkpoint_path="best_model/height_age_multitask_wideband/height_age_multitask_wideband_bestmodel.ckpt"
-        # band='wideband'         # {wideband, narrowband}
-
-        checkpoint_path="best_model/height_age_multitask_narrowband/height_age_multitask_narrowband_bestmodel.ckpt"
-        band='narrowband'         # {wideband, narrowband}
+        if band == 'wideband':
+            checkpoint_path="best_model/height_age_multitask_wideband/height_age_multitask_wideband_bestmodel.ckpt"
+        elif band == 'narrowband':
+            checkpoint_path="best_model/height_age_multitask_narrowband/height_age_multitask_narrowband_bestmodel.ckpt"
 
         trainer = Trainer()
         # load test data

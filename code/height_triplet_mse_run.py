@@ -13,12 +13,12 @@ from modules_height.model_lstm_triplet_mse import lstm_triplet_mse
 import sys
 import os
 
-
 if __name__ == '__main__':   
     print(">>>>>> Model 2: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation <<<<<<")
-    band='narrowband'         # {wideband, narrowband} change this parameter to run the program on wideband or narrowband data
-    running='TESTING'         # {TRAINING, TESTING} -> select to monitor the program 
+    running=sys.argv[1]         # {TRAINING, TESTING} -> select to monitor the program 
+    band=sys.argv[2]            # {wideband, narrowband} -> change this parameter to run the program on wideband or narrowband data 
     print(running + " On data type: " + band)
+
     # 1. LOAD ENVIRONMENT
     ################ Loading GPU or CPU ###########################################################################
     device = pytorch_env()
@@ -39,12 +39,12 @@ if __name__ == '__main__':
         batch_size = 32,                # Number of samples in each batch
         criterion_ht = nn.MSELoss(),    # Losses of BackProp
         criterion_tl = nn.TripletMarginLoss(),    # Losses of BackProp
-        max_epochs = 100,                 # Max Number of Epochs to run the model
+        max_epochs = 100,               # Max Number of Epochs to run the model
         n_features = 84,                # Number of Features per timeframe (84 for this experiment: 80 FBank + 3 Pitch + 1 Gender)
         hidden_size = 64,               # Number of Hidden Units of LSTM
         num_layers = 1,                 # Number of LSTM Layers
         dropout = 0.2,                  # Dropout for LSTM and Dense Layer
-        learning_rate = 0.0005,          # Learning Rate
+        learning_rate = 0.0001,         # Learning Rate
         output_size = 1,                # Number of Outputs (1 for height estimation)
         early_stop_patience = 10        # Number of consecutive epochs without any loss reduction after which training stops 
     )
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     # In Training process: Train a new model
     if running == 'TRAINING':
         program_name='height_triplet_mse_'+band
-        version='12'
+        version='01'
         csv_logger = CSVLogger('exp/', program_name, version) # Creates a CSV in the folder which contains all the logs (Training + Testing + Validation)
     
         trainer = Trainer(
@@ -121,12 +121,11 @@ if __name__ == '__main__':
     # In Testing process: Using trained model to test and get the result
     elif running == 'TESTING':
         ##### Change to the location that the trained model is stored
-        # checkpoint_path="best_model/height_triplet_mse_wideband/height_triplet_mse_wideband_bestmodel.ckpt"
-        # band='wideband'         # {wideband, narrowband}
-
-        checkpoint_path="best_model/height_triplet_mse_narrowband/height_triplet_mse_narrowband_bestmodel.ckpt"
-        band='narrowband'         # {wideband, narrowband}
-
+        if band == 'wideband':
+            checkpoint_path="best_model/height_triplet_mse_wideband/height_triplet_mse_wideband_bestmodel.ckpt"
+        elif band == 'narrowband':
+            checkpoint_path="best_model/height_triplet_mse_narrowband/height_triplet_mse_narrowband_bestmodel.ckpt"
+        
         trainer = Trainer()
         # load test data
         dm = Data_Module_height_triplet_mse(

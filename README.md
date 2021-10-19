@@ -48,7 +48,9 @@ Open `ISCAP_Height_Estimation/path.sh` file, change $MAIN_ROOT$ to your espnet d
 ## How to run Height Estimation systems
 1. Data preparation step
 ```bash
-bash prepare_TIMIT_data.sh
+bash prepare_TIMIT_data.sh      # prepare wideband data (16kHz)
+bash prepare_data_narrowband.sh      # prepare narrow data (8kHz)
+
 ```
 This step will download .zip file of TIMIT dataset => extract and then generate features using Kaldi format
 
@@ -92,14 +94,14 @@ Moreover, we use 3 data augmentations for our data:
 
 </br></br>
 
-**Results**: </br>
+<!-- **Results**: </br>
 
 |S. No. | Model                                                 | Height MAE All  | Height MAE Male | Height MAE Female |
 | ----- | --------------------------------------------------| --------------- | --------------- | ----------------- |
 | 1.    | LSTM + Cross_Attention + MSE_Loss - Age + Height multitask  |5.36             | 5.40            | 5.26              |
 | 2.    | LSTM + Cross_Attention + Triplet & MSE_Loss	       |**5.23**         | 5.31            | 5.08              |
 | Shareef (2020)| Comb3 (Fstats + formant + harmonic features (amplitude + frequency locations))  |  | 5.2             | 4.8               |
-| Singh (2016)| Random Forest                                |                 | 5.0             | 5.0               |
+| Singh (2016)| Random Forest                                |                 | 5.0             | 5.0               | -->
 
 
  

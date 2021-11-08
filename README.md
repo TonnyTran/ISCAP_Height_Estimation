@@ -72,7 +72,7 @@ e.g. bash run_height_estimation.sh 1 TESTING narrowband withgender # test the pr
 We can monitor training and testing
 
 ## Other instructions:
-
+- You may get "USER: Unbound variable issue" error when running in Google Colab or Docker, please see the instruction in file `prepare_TIMIT_data.sh` from line 13 to 20
 - You may change the hyper-parameters such as the `batch_size`, `max_epochs`, `early_stopping_patience`, `learning_rate`, `num_layers`, `loss_criterion`, etc. in the run.py file of any model.
 - Please note that the if you are not using a GPU for processing, change the hyper-parameter of `gpu` in the `trainer` function (in the run.py files) to `0`.
 

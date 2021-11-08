@@ -57,12 +57,13 @@ This step will download .zip file of TIMIT dataset => extract and then generate 
 
 2. Run the program: train and test
 ```bash
-bash run_height_estimation.sh running program band gender_input # $running in {TRAINING, TESTING}
-                                                                # $program in {1, 2} indicates which program you want to run   
-                                                                # $band in {wideband, narrowband} indicates which data set is used (wideband - 16kHz data; narrowband - 8kHz data)
-                                                                # $gender_input in {withgender, nogender} -> without or with gender as an input
-#e.g. bash run_height_estimation.sh 1 TRAINING wideband nogender # train the model on wideband data and without gender input
-#e.g. bash run_height_estimation.sh 1 TESTING narrowband withgender # test the pretrained model on narrowband data and with gender as an input
+bash run_height_estimation.sh program running band gender_input
+# $running in {TRAINING, TESTING}
+# $program in {1, 2} indicates which program you want to run
+# $band in {wideband, narrowband} indicates which data set is used (wideband - 16kHz data; narrowband - 8kHz data)
+# $gender_input in {withgender, nogender} -> without or with gender as an input
+e.g. bash run_height_estimation.sh 1 TRAINING wideband nogender # train the model on wideband data and without gender input
+e.g. bash run_height_estimation.sh 1 TESTING narrowband withgender # test the pretrained model on narrowband data and with gender as an input
 ```
 
 - program=1     =>    Model 1: LSTM + Cross_Attention + MAE_Loss | FBank Features | MultiTask Estimation (both age & height)

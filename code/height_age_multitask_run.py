@@ -16,7 +16,8 @@ if __name__ == '__main__':
     print(">>>>>> Model 1: LSTM + Cross_Attention + MSE_Loss | FBank Features | MultiTask Estimation (both age & height) <<<<<<")   
     running=sys.argv[1]         # {TRAINING, TESTING} -> select to monitor the program 
     band=sys.argv[2]            # {wideband, narrowband} -> change this parameter to run the program on wideband or narrowband data 
-    print(running + " On data type: " + band)
+    gender_input=sys.argv[3]    # {nogender, withgender} -> without or with gender as an input
+    print(running + " On data type: " + band + " + " + gender_input)
 
     # 1. LOAD ENVIRONMENT
     ################ Loading GPU or CPU ###########################################################################
@@ -38,7 +39,7 @@ if __name__ == '__main__':
         batch_size = 32,                # Number of samples in each batch
         criterion = nn.MSELoss(),       # Loss of BackProp     
         max_epochs = 100,                 # Max Number of Epochs to run the model
-        n_features = 84,                # Number of Features per timeframe (84 for this experiment: 80 FBank + 3 Pitch + 1 Gender)
+        n_features = 83 if gender_input=='nogender' else 84,  # Number of Features per timeframe (84 for this experiment: 80 FBank + 3 Pitch + 1 Gender)
         hidden_size = 64,               # Number of Hidden Units of LSTM
         num_layers = 1,                 # Number of LSTM Layers
         dropout = 0.2,                  # Dropout for LSTM and Dense Layer
@@ -50,7 +51,7 @@ if __name__ == '__main__':
 
     # In Training process: Train a new model
     if running == 'TRAINING':
-        program_name='height_age_multitask_'+band
+        program_name='height_age_multitask_'+band+"_"+gender_input
         version='01'
         csv_logger = CSVLogger('exp/', program_name, version) # Creates a CSV in the folder which contains all the logs (Training + Testing + Validation)
 
@@ -67,7 +68,7 @@ if __name__ == '__main__':
         dm = Data_Module_height_age_multitask(
             seq_len = params['seq_len'],
             batch_size = params['batch_size'], num_workers=4,     # Number of workers for Train_Data_Loader
-            band = band,
+            band = band, gender_input=gender_input,
         )
         
         # 3. SELECT THE MODEL TO USE
@@ -119,16 +120,22 @@ if __name__ == '__main__':
     elif running == 'TESTING':
         ##### Change to the location that the trained model is stored
         if band == 'wideband':
-            checkpoint_path="best_model/height_age_multitask_wideband/height_age_multitask_wideband_bestmodel.ckpt"
+            if gender_input=='withgender':
+                checkpoint_path="best_model/height_age_multitask_wideband_withgender/height_age_multitask_wideband_withgender_bestmodel.ckpt"
+            elif gender_input=='nogender':
+                checkpoint_path="best_model/height_age_multitask_wideband_nogender/height_age_multitask_wideband_nogender_bestmodel.ckpt"
         elif band == 'narrowband':
-            checkpoint_path="best_model/height_age_multitask_narrowband/height_age_multitask_narrowband_bestmodel.ckpt"
+            if gender_input=='withgender':
+                checkpoint_path="best_model/height_age_multitask_narrowband_withgender/height_age_multitask_narrowband_withgender_bestmodel.ckpt"
+            elif gender_input=='nogender':
+                checkpoint_path="best_model/height_age_multitask_narrowband_nogender/height_age_multitask_narrowband_nogender_bestmodel.ckpt"
 
         trainer = Trainer()
         # load test data
         dm = Data_Module_height_age_multitask(
             seq_len = params['seq_len'],
             batch_size = params['batch_size'], num_workers=4,     # Number of workers for Train_Data_Loader
-            band = band,
+            band = band, gender_input=gender_input,
         )
         test_loader = dm.test_dataloader()
 

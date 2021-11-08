@@ -104,7 +104,7 @@ class lstm_triplet_mse(pl.LightningModule):
         # loss_n = self.criterion_n(torch.squeeze(n_hat).float(), n.float())
         # loss = 3*loss_ht + loss_n
         for i in range(ht_hat.shape[0]):
-            #print(i, ht_hat[i], y_ht[i])
+            # print(i, torch.squeeze(ht_hat[i]), target[i])
             if gender[i].item() == 1:
                 mse_error_f = self.mse_female(torch.squeeze(ht_hat[i]), target[i])
                 mae_error_f = self.mae_female(torch.squeeze(ht_hat[i]), target[i])

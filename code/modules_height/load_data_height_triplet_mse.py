@@ -1,10 +1,11 @@
 import numpy as np
 import os
+import sys
 import math, random
 from kaldiio import ReadHelper
 from torch.utils.data.dataset import Dataset
 from .spec_aug import spec_augment 
-from .support_functions import get_labels, get_speakerID, repeatPaddingWithGender, zeropadding
+from .support_functions import get_labels, get_speakerID, repeatPaddingWithGender, zeropadding, repeatPaddingWithoutGender
 
 #### Dataset directories: Train + Test + Valid
 cwd = os.getcwd()
@@ -26,8 +27,9 @@ map_dict = get_labels(label_file)
 # TRAIN DATA
 class Train_Dataset_height_triplet_mse(Dataset):
     # load the dataset
-    def __init__(self, band='wideband'):
+    def __init__(self, band='wideband', gender_input='nogender'):
         self.band=band
+        self.gender_input=gender_input
         train_dataset = train_wideband
         if self.band =='narrowband':
             train_dataset = train_narrowband
@@ -64,12 +66,22 @@ class Train_Dataset_height_triplet_mse(Dataset):
         negative_label = random.choice(negative_list)
         negative_data = self.dic[negative_label]
 
-        # repeat padding anchor
-        anchor_data = repeatPaddingWithGender(anchor_data, 800, anchor_label[0])
-        # repeat padding positive
-        positive_data = repeatPaddingWithGender(positive_data, 800, get_speakerID(positive_label)[0])
-        # repeat padding negative
-        negative_data = repeatPaddingWithGender(negative_data, 800, get_speakerID(negative_label)[0])
+        # Repeat padding
+        if self.gender_input == 'withgender':
+            # repeat padding anchor
+            anchor_data = repeatPaddingWithGender(anchor_data, 800, anchor_label[0])
+            # repeat padding positive
+            positive_data = repeatPaddingWithGender(positive_data, 800, get_speakerID(positive_label)[0])
+            # repeat padding negative
+            negative_data = repeatPaddingWithGender(negative_data, 800, get_speakerID(negative_label)[0])
+
+        elif self.gender_input == 'nogender':
+            # repeat padding anchor
+            anchor_data = repeatPaddingWithoutGender(anchor_data, 800)
+            # repeat padding positive
+            positive_data = repeatPaddingWithoutGender(positive_data, 800)
+            # repeat padding negative
+            negative_data = repeatPaddingWithoutGender(negative_data, 800)
 
         # # zero padding anchor
         # anchor_data = zeropadding(anchor_data, 800, anchor_label[0])
@@ -89,8 +101,9 @@ class Train_Dataset_height_triplet_mse(Dataset):
 # TEST DATA 
 class Test_Dataset_height_triplet_mse(Dataset):
     # load the dataset
-    def __init__(self, band='wideband'):
+    def __init__(self, band='wideband', gender_input='nogender'):
         self.band=band
+        self.gender_input=gender_input
         test_dataset = test_wideband
         if self.band =='narrowband':
             test_dataset = test_narrowband
@@ -98,10 +111,21 @@ class Test_Dataset_height_triplet_mse(Dataset):
         with ReadHelper(test_dataset) as reader:
             self.dic = { u:d for u,d in reader }
         self.dic_keys = list(self.dic.keys())
+
+        # speakerID="MWBT0"
+        # list_utt=[]
+        # for item in self.dic_keys:
+        #     if get_speakerID(item) == speakerID:
+        #         list_utt.append(item)
+        # self.dic_keys=list_utt
+
+        # liststring = ' '.join([str(elem) for elem in self.dic_keys])
+        # print("Testing list utts:")
+        # print(liststring)
         
     # number of rows in the dataset
     def __len__(self):
-        return len(self.dic)
+        return len(self.dic_keys)
  
     # get a row at an index
     def __getitem__(self, idx):
@@ -109,8 +133,11 @@ class Test_Dataset_height_triplet_mse(Dataset):
         data = self.dic[self.dic_keys[idx]]
         label = get_speakerID(self.dic_keys[idx])
 
-        # repeat padding
-        data = repeatPaddingWithGender(data, 800, label[0])
+        # repeat padding data
+        if self.gender_input == 'withgender':
+            data = repeatPaddingWithGender(data, 800, label[0])
+        elif self.gender_input == 'nogender':
+            data = repeatPaddingWithoutGender(data, 800)
 
         # # zero padding
         # data = zeropadding(data, 800, label[0])
@@ -130,8 +157,9 @@ class Test_Dataset_height_triplet_mse(Dataset):
 # VALIDATION DATA
 class Val_Dataset_height_triplet_mse(Dataset):
     # load the dataset
-    def __init__(self, band='wideband'):
+    def __init__(self, band='wideband', gender_input='nogender'):
         self.band=band
+        self.gender_input=gender_input
         valid_dataset = valid_wideband
         if self.band =='narrowband':
             valid_dataset = valid_narrowband
@@ -166,12 +194,22 @@ class Val_Dataset_height_triplet_mse(Dataset):
         negative_label = random.choice(negative_list)
         negative_data = self.dic[negative_label]
 
-        # repeat padding anchor
-        anchor_data = repeatPaddingWithGender(anchor_data, 800, anchor_label[0])
-        # repeat padding positive
-        positive_data = repeatPaddingWithGender(positive_data, 800, get_speakerID(positive_label)[0])
-        # repeat padding negative
-        negative_data = repeatPaddingWithGender(negative_data, 800, get_speakerID(negative_label)[0])
+        # Repeat padding
+        if self.gender_input == 'withgender':
+            # repeat padding anchor
+            anchor_data = repeatPaddingWithGender(anchor_data, 800, anchor_label[0])
+            # repeat padding positive
+            positive_data = repeatPaddingWithGender(positive_data, 800, get_speakerID(positive_label)[0])
+            # repeat padding negative
+            negative_data = repeatPaddingWithGender(negative_data, 800, get_speakerID(negative_label)[0])
+
+        elif self.gender_input == 'nogender':
+            # repeat padding anchor
+            anchor_data = repeatPaddingWithoutGender(anchor_data, 800)
+            # repeat padding positive
+            positive_data = repeatPaddingWithoutGender(positive_data, 800)
+            # repeat padding negative
+            negative_data = repeatPaddingWithoutGender(negative_data, 800)
 
         # # zero padding anchor
         # anchor_data = zeropadding(anchor_data, 800, anchor_label[0])

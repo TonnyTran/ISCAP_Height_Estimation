@@ -16,6 +16,9 @@
 # os.environ['USER'] = 'your_username'
 # !echo $USER
 
+# Note for Docker: Set USER environment variable. USER environment variable is not set in Google Colab. 
+# export USER='your_username'
+
 # We can control the program flow by changing start and stop stage
 steps=0-3         # to run step 0 to step 3, use steps=0-3
 

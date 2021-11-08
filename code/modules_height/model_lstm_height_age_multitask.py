@@ -104,7 +104,7 @@ class lstm_height_age_multitask(pl.LightningModule):
         loss_age = self.criterion(torch.squeeze(age_hat).float(), y_age.float())
         loss = 2*loss_ht + loss_age
         for i in range(ht_hat.shape[0]):
-            #print(i, ht_hat[i], y_ht[i])
+            # print(i, torch.squeeze(ht_hat[i]), y_ht[i])
             if gender[i].item() == 1:
                 mse_error_f = self.mse_female(torch.squeeze(ht_hat[i]), y_ht[i])
                 mae_error_f = self.mae_female(torch.squeeze(ht_hat[i]), y_ht[i])

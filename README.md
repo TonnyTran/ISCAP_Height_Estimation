@@ -29,9 +29,10 @@ conda install torchvision==0.9.0 torchaudio==0.8.0 -c pytorch
 ```bash
 conda install pytorch-lightning -c conda-forge
 ```
-5) Install ffmpeg
+5) Install ffmpeg and openpyxl
 ```bash
 conda install ffmpeg
+conda install openpyxl
 ```
 ### Download the project
 1) Clone the project from GitHub into your workspace
@@ -54,26 +55,20 @@ bash prepare_data_narrowband.sh      # prepare narrow data (8kHz)
 ```
 This step will download .zip file of TIMIT dataset => extract and then generate features using Kaldi format
 
-2. Run the program
+2. Run the program: train and test
 ```bash
-bash run_height_estimation.sh program     # $program in {1, 2} indicates which program you want to run   
-#e.g. bash run_height_estimation.sh 1
+bash run_height_estimation.sh running program band gender_input # $running in {TRAINING, TESTING}
+                                                                # $program in {1, 2} indicates which program you want to run   
+                                                                # $band in {wideband, narrowband} indicates which data set is used (wideband - 16kHz data; narrowband - 8kHz data)
+                                                                # $gender_input in {withgender, nogender} -> without or with gender as an input
+#e.g. bash run_height_estimation.sh 1 TRAINING wideband nogender # train the model on wideband data and without gender input
+#e.g. bash run_height_estimation.sh 1 TESTING narrowband withgender # test the pretrained model on narrowband data and with gender as an input
 ```
 
 - program=1     =>    Model 1: LSTM + Cross_Attention + MAE_Loss | FBank Features | MultiTask Estimation (both age & height)
 - program=2     =>    Model 2: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation
 
-Set up parameter in run_height_estimation.sh as follows.
-- running='TRAINING'         # {TRAINING, TESTING} -> select to monitor the program 
-- band='wideband'         # {wideband, narrowband} change this parameter to run the program on wideband or narrowband data
-3. Test the trained model
-```bash
-bash test_height_model.sh program     # $program in {1, 2} 
-```
-We can control the test program by input program number in {1, 2}.
-Set up parameter in run_height_estimation.sh as follows.
-- running='TESTING'         # {TRAINING, TESTING} -> select to monitor the program 
-- band='wideband'         # {wideband, narrowband} change this parameter to run the program on wideband or narrowband data
+We can monitor training and testing
 
 ## Other instructions:
 
@@ -85,7 +80,6 @@ Set up parameter in run_height_estimation.sh as follows.
 This document is to compile the summary of all the models for height estimation using TIMIT dataset. </br>
 We predominantly use below feature extraction for these models:
 - **Filter Bank**: 80 FBank + 3 Pitch + 1 Binary_Gender (Features_Dimension: 83)
-<!-- - **Wav2Vec2**: Features extracted from pre-trained Wav2Vec2 model (Features_Dimension: 768) -->
 
 Moreover, we use 3 data augmentations for our data:
 - **CMVN**: Cepstral mean and variance normalization for FBank features

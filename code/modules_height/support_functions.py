@@ -16,7 +16,7 @@ def get_speakerID(uttid):
     speaker = uttid.split('-')[-1].split('_')[0] 
     return speaker
 
-def repeatpadding(utt_data, padding_length):
+def repeatPaddingWithoutGender(utt_data, padding_length):
     if len(utt_data) < padding_length:
         result = np.array([utt_data[i % len(utt_data)] for i in range(padding_length)] )
     elif len(utt_data) > padding_length:

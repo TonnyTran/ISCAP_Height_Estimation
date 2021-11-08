@@ -10,12 +10,12 @@
 # conf/queue.conf in http://kaldi-asr.org/doc/queue.html for more information,
 # or search for the string 'default_config' in utils/queue.pl or utils/slurm.pl.
 
-export cmd="/home3/theanhtran/slurm.pl"
-export train_cmd="/home3/theanhtran/slurm.pl --gpu 1 --exclude=node0[3-7]"
-export cuda_cmd="/home3/theanhtran/slurm.pl --gpu 1 --nodelist=node08 "
-export cuda_cmd_alt="/home3/theanhtran/slurm.pl --gpu 1 --nodelist=node06 "
+# export cmd="/home3/theanhtran/slurm.pl"
+# export train_cmd="/home3/theanhtran/slurm.pl --gpu 1 --exclude=node0[3-7]"
+# export cuda_cmd="/home3/theanhtran/slurm.pl --gpu 1 --nodelist=node08 "
+# export cuda_cmd_alt="/home3/theanhtran/slurm.pl --gpu 1 --nodelist=node06 "
 
-# export cmd="run.pl"
-# export train_cmd="run.pl --mem 4G --gpu 1"
-# export cuda_cmd="run.pl --mem 2G --gpu 1"
-# export decode_cmd="run.pl --mem 4G"
+export cmd="run.pl"
+export train_cmd="run.pl --mem 4G --gpu 1"
+export cuda_cmd="run.pl --mem 2G --gpu 1"
+export decode_cmd="run.pl --mem 4G"

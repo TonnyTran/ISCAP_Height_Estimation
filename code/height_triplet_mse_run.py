@@ -17,7 +17,8 @@ if __name__ == '__main__':
     print(">>>>>> Model 2: LSTM + Cross_Attention + Triplet & MSE_Loss | FBank Features | Height Estimation <<<<<<")
     running=sys.argv[1]         # {TRAINING, TESTING} -> select to monitor the program 
     band=sys.argv[2]            # {wideband, narrowband} -> change this parameter to run the program on wideband or narrowband data 
-    print(running + " On data type: " + band)
+    gender_input=sys.argv[3]    # {nogender, withgender} -> without or with gender as an input
+    print(running + " On data type: " + band + " + " + gender_input)
 
     # 1. LOAD ENVIRONMENT
     ################ Loading GPU or CPU ###########################################################################
@@ -40,7 +41,7 @@ if __name__ == '__main__':
         criterion_ht = nn.MSELoss(),    # Losses of BackProp
         criterion_tl = nn.TripletMarginLoss(),    # Losses of BackProp
         max_epochs = 100,               # Max Number of Epochs to run the model
-        n_features = 84,                # Number of Features per timeframe (84 for this experiment: 80 FBank + 3 Pitch + 1 Gender)
+        n_features = 83 if gender_input=='nogender' else 84,    # Number of Features per timeframe (84 for this experiment: 80 FBank + 3 Pitch + 1 Gender)
         hidden_size = 64,               # Number of Hidden Units of LSTM
         num_layers = 1,                 # Number of LSTM Layers
         dropout = 0.2,                  # Dropout for LSTM and Dense Layer
@@ -52,7 +53,7 @@ if __name__ == '__main__':
 
     # In Training process: Train a new model
     if running == 'TRAINING':
-        program_name='height_triplet_mse_'+band
+        program_name='height_triplet_mse_'+band+"_"+gender_input
         version='01'
         csv_logger = CSVLogger('exp/', program_name, version) # Creates a CSV in the folder which contains all the logs (Training + Testing + Validation)
     
@@ -69,7 +70,7 @@ if __name__ == '__main__':
         dm = Data_Module_height_triplet_mse(
             seq_len = params['seq_len'],
             batch_size = params['batch_size'], num_workers=4,     # Number of workers for Train_Data_Loader
-            band=band,
+            band=band, gender_input=gender_input,
         )
         ###################################################################################################
         # 3. SELECT THE MODEL TO USE
@@ -122,16 +123,22 @@ if __name__ == '__main__':
     elif running == 'TESTING':
         ##### Change to the location that the trained model is stored
         if band == 'wideband':
-            checkpoint_path="best_model/height_triplet_mse_wideband/height_triplet_mse_wideband_bestmodel.ckpt"
+            if gender_input=='withgender':
+                checkpoint_path="best_model/height_triplet_mse_wideband_withgender/height_triplet_mse_wideband_withgender_bestmodel.ckpt"
+            elif gender_input=='nogender':
+                checkpoint_path="best_model/height_triplet_mse_wideband_nogender/height_triplet_mse_wideband_nogender_bestmodel.ckpt"
         elif band == 'narrowband':
-            checkpoint_path="best_model/height_triplet_mse_narrowband/height_triplet_mse_narrowband_bestmodel.ckpt"
+            if gender_input=='withgender':
+                checkpoint_path="best_model/height_triplet_mse_narrowband_withgender/height_triplet_mse_narrowband_withgender_bestmodel.ckpt"
+            elif gender_input=='nogender':
+                checkpoint_path="best_model/height_triplet_mse_narrowband_nogender/height_triplet_mse_narrowband_nogender_bestmodel.ckpt"
         
         trainer = Trainer()
         # load test data
         dm = Data_Module_height_triplet_mse(
             seq_len = params['seq_len'],
             batch_size = params['batch_size'], num_workers=4,     # Number of workers for Train_Data_Loader
-            band=band,
+            band=band, gender_input=gender_input,
         )
         test_loader = dm.test_dataloader()
 
